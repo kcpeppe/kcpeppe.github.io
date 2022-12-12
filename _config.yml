@@ -1,0 +1,57 @@
+title: Random Notes and Cheat Sheets
+description: A collection of notes on topics of interest
+author: Kirk Pepperdine
+github: https://github.com/kcpeppe
+about: Offering Java performance tuning, benchmarking, and workshops.
+#disqus_shortname: stackproblems
+#google_analytics: XXX
+
+enableTags: true
+tagarray: []
+
+collections:
+  project:
+    output: true
+    permalink: /project/:path/
+
+social:
+#     github:kcpeppe
+#    - icon: fa-facebook
+#      link: "#"
+    - icon: fa-twitter
+      link: "https://twitter.com/kcpeppe"
+    - icon: fa-linkedin
+      link: "https://www.linkedin.com/in/kirk-pepperdine/"
+#    - icon: fa-stack-exchange
+#      link: "#"
+#    - icon: fa-github
+#      link: "https://github.com/kcpeppe
+
+share:
+  twitter_username: github.io
+  fb_appid: 10154441343934180
+
+urls:
+    - text: About Me
+      url: /about/
+    - text: My Projects
+      url: /projects/
+    - text: XML Feed
+      url: /feed.xml
+
+url: "https://kcpeppe.github.io"
+baseurl: ""
+paginate: 20
+per_page: 20
+paginate_path: "/page/:num/"
+markdown: kramdown
+plugins:
+  - jekyll-paginate
+  - jekyll-gist
+
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  ignore:
+    envs: ['development']

@@ -1,0 +1,46 @@
+/*  Super Search
+    Author: Kushagra Gour (http://kushagragour.in)
+    MIT Licensed
+*/
+
+input#js-search__input {
+  font-size: 12px;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+  color: #B3B3B3;
+  background: #2b2b2b;
+  border-color: #4b4b4b;
+}
+.is-active .search__input {
+  transform: translateY(0);
+}
+.search__results {
+  list-style: none;
+  padding: 20px 0px 0px;
+  overflow-x: hidden;
+  height: calc(100% - 110px);
+  transition: 0.2s ease;
+}
+.search__results.is-hidden {
+  opacity: 0;
+  transform: translateY(-1vh);
+  display: none;
+}
+/*
+.search__results > li {
+  border-top: 1px solid #2b2b2b;
+}
+.search__results > li > a {
+  display: block;
+  padding: 5px;
+}
+
+*/
+.search__result-date {
+  color: #3fa757;
+  position: absolute;
+  right: 12px;
+}
+.search.is-active {
+  opacity: 1;
+  visibility: visible;
+}

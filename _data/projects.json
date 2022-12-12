@@ -1,0 +1,18 @@
+[
+	{
+		"slug": "github",
+		"name": "GCToolKit",
+		"image": "gctoolkit.png",
+		"url": "https://github.com/microsoft/gctoolkit",
+		"date": "Aug 2021",
+		"tags": ["Java","Garbage Collection","Performance"]
+	},
+	{
+		"slug": "github",
+		"name": "Regions",
+		"image": "regions.jpg",
+		"url": "https://github.com/kcpeppe/regions",
+		"date": "Nov 2017",
+		"tags": ["Java","Garbage Collection","Performance", "G1"]
+	}
+]

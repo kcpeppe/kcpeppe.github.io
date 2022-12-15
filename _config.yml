@@ -5,6 +5,7 @@ github: https://github.com/kcpeppe
 about: Offering Java performance tuning, benchmarking, and workshops.
 #disqus_shortname: stackproblems
 google_analytics: G-3JYGFFSH45
+google_analytics_key: G-3JYGFFSH45
 
 enableTags: true
 tagarray: []

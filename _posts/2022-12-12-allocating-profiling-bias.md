@@ -1,8 +1,10 @@
 ---
 layout: post
 title:  "The Bias in Allocation Profiling"
+exerpt: "This writeup looks at the sampling biases in a couple of popular allocation profilers"
 date:   2022-12-12 07:30:00 +0900
 categories: [general,java,memory]
+tags: [Java, allocation, TLAB, memory, async profiler, JFR, VisualVM, profiling]
 ---
 
 I'm very exciting about reviving my blog and launching my first real post. There are a bunch of quotes on the subject of measurements. The two I like to focus on are "You can't improve what you don't measure" (Peter Drucker) and "we are only as good as our measurements". The problem with measurements is that they are all flawed in some fundamental way. Our measurements may be lacking in some combination of precision, or accuracy. We may be measuring at the wrong resolution. Maybe we can't measure everything so instead we sample. If we do sample, then we need to pick our bias because ever sampling technique comes with some form of bias. This bias will skew our measurements and consequently, our interpretation of the system we are measuring. This is the basis for the theme here, how the bias in how allocation profilers measure affect our ideas of how. we can improve the memory efficiency of our applications and how having multiple perspectives, or measurements might provide us with a truer picture.

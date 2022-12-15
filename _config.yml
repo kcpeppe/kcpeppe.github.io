@@ -4,7 +4,7 @@ author: Kirk Pepperdine
 github: https://github.com/kcpeppe
 about: Offering Java performance tuning, benchmarking, and workshops.
 #disqus_shortname: stackproblems
-#google_analytics: XXX
+google_analytics: G-3JYGFFSH45
 
 enableTags: true
 tagarray: []
@@ -28,10 +28,12 @@ social:
 #      link: "https://github.com/kcpeppe
 
 share:
-  twitter_username: github.io
+  twitter_username: kcpeppe
   fb_appid: 10154441343934180
 
 urls:
+    - text: Workshops
+      url: /workshops/
     - text: About Me
       url: /about/
     - text: My Projects
@@ -39,7 +41,7 @@ urls:
     - text: XML Feed
       url: /feed.xml
 
-url: "https://kcpeppe.github.io"
+url: "https://www.kodewerk.com"
 baseurl: ""
 paginate: 20
 per_page: 20

@@ -4,8 +4,13 @@ title: Java Performance Tuning Workshops
 permalink: /workshops/
 ---
 
+* [Memory Effecient Java](#mej)
+* [Java Memory Leaks](#jml)
+* [Garbage Collection Tuning](#gct)
+* [Java Performance Tuning Workshop](#jptw)
 
-<h3> Memory Effecient Java   (4hrs)</h3>
+
+<h3 id="mej">Memory Effecient Java (4hrs)</h3>
 
 * **Objective:** Learn how to quickly diagnose and solve memory leaks in Java heap
 * **Topics:**
@@ -15,18 +20,16 @@ permalink: /workshops/
   * High Memory Churn
     * Introduction
     * Monitoring
-    * Estimating allocation rates
     * Tooling
     * Resolving high allocations by example
     * Problems with profilers
-    * JIT Optimizations
   * Live Set Size Reduction
     * Introduction
-    * JVM Optimizations
     * Tour of tooling
-  
+    
+<a href="#top">&#8593;</a>
 	
-<h3> Solving Java Memory Leaks  (4hrs)</h3>
+<h3 id="jml">Solving Java Memory Leaks (4hrs)</h3>
 
 * **Objective:** Learn how to quickly diagnose, characterize and solve memory inefficiency in Java applications.
 * **Topics:**
@@ -39,9 +42,11 @@ permalink: /workshops/
   * Diagnostic - Generational counts
   * Diagnostic - Dominators
   * Other Leaks (Classloaders/Metaspace)
-		I
+  
+<a href="#top">&#8593;</a>
+
 	
-<h3> Garbage Collection Tuning.  (8hrs)</h3>
+<h3 id="gct">Garbage Collection Tuning (8hrs)</h3>
 
   * **Objective:** Learn the basics of Garbage Collection and how to tune GC in Java
   * **Topics:**
@@ -64,8 +69,10 @@ permalink: /workshops/
     * GC tooling for observability
     * GC Log Analysis
     * OutOfMemoryError
+
+<a href="#top">&#8593;</a>
 	
-<h3>Java Performance Tuning Workshop   (3 days)</h3>
+<h3 id="jptw">Java Performance Tuning Workshop (3 days)</h3>
 
   * **Objective:** Hands on dive into performance tuning Java applications.  
   * **Topics:**
@@ -79,4 +86,6 @@ permalink: /workshops/
     * Profiling Fundamentals
     * Java Management Extensions
     * IPC
+
+<a href="#top">&#8593;</a>
        

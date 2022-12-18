@@ -37,6 +37,8 @@ urls:
       url: /workshops/
     - text: About Me
       url: /about/
+    - text: Contact
+      url: /contact/
     - text: My Projects
       url: /projects/
     - text: XML Feed

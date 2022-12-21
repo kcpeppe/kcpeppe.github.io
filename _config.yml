@@ -3,7 +3,7 @@ description: A collection of notes on topics of interest
 author: Kirk Pepperdine
 github: https://www.kodewerk.com
 about: Offering Java performance tuning, benchmarking, and workshops.
-#disqus_shortname: stackproblems
+disqus_shortname: kodewerk
 google_analytics: G-3JYGFFSH45
 google_analytics_key: G-3JYGFFSH45
 

@@ -6,6 +6,7 @@ body {
   color: #777777;
   background: #000000 url("/static/img/subtle_dots.png");
 }
+
 hr {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -200,6 +201,7 @@ input:-webkit-autofill:active{
   margin: 0px 0px 0px 30px;
   border-style: solid;
   border-width: 1px;
+  padding-left: 0px !important;
 }
 
 .contact-comment {

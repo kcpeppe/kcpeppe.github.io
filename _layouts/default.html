@@ -39,7 +39,6 @@ layout: compress
         else
           return true;
       }
-
     </script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -163,6 +162,8 @@ layout: compress
             <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
             <ul class="search__results" id="js-search__results"></ul>
           </div>
+
+
           <hr />
           <ul class="sidebar-nav">
             <!-- strong>Navigation</strong -->
@@ -176,12 +177,7 @@ layout: compress
       </div>
       <div class="col-sm-8 col-offset-1 main-layout">
         {{ content }}
-        <footer>
-          &copy; {{ site.author }}
-          {% if site.github %}
-            - <a href="{{ site.github }}">{{ site.github }}</a>
-          {% endif %}
-        </footer>
+        {% include footer.html %}
       </div>
       <!-- end /.col-sm-8 -->
     </div>

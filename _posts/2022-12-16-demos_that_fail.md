@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Demo Failures"
 date:   2022-12-16 12:25:00 +0900
 categories: [general,java,performance]

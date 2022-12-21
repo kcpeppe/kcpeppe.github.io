@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "I've finally recovered my blog"
 date:   2022-12-05 06:40:10 +0900
 categories: [general]

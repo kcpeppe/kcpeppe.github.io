@@ -3,7 +3,7 @@ body {
   line-height: 1.5em;
   font-weight: 300;
   font-size: 16px;
-  color: #777777;
+  color: #B4B4B4;
   background: #000000 url("/static/img/subtle_dots.png");
 }
 
@@ -21,7 +21,7 @@ span.time, span.categories {
   text-transform: uppercase;
 }
 h1, h2, h3 {
-  color: #777777;
+  color: #B4B4B4;
   font-weight: normal;
 }
 h1 {
@@ -61,7 +61,7 @@ a:hover {
 div.content pre {
   background: #333333;
   padding: 10px;
-  color: #2B2B2B;
+  color: #B4B4B4;
   overflow-x: auto;
   font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
   font-size: 12px;
@@ -79,7 +79,7 @@ footer {
   margin-top: 10px;
   margin-bottom: 3em;
   padding-top: 10px;
-  color: #777777;
+  color: #B4B4B4;
   font-size: 11px;
   /*position: page; */
   /*bottom: 0; */
@@ -95,16 +95,16 @@ div.post-content .btn-tags {
 div.col-sm-3 {
   margin-top: 100px;
   font-size: 14px;
-  color: #777777;
+  color: #B4B4B4;
 }
 div.col-sm-3 strong {
   font-size: 24px;
-  color: #777777;
+  color: #B4B4B4;
   font-weight: normal;
 }
 div.col-sm-3 div.profile-about {
   margin-top: 12px;
-  color: #777777;
+  color: #B4B4B4;
 }
 
 /* Pagination */

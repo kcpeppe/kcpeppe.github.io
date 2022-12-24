@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Introduction to GCToolKit"
 date:   2022-12-22 12:25:00 +0900
 categories: [general,java,performance]

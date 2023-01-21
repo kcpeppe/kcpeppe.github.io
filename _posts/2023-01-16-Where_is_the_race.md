@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "Fun With Vert.x"
+title:  "Where is the Race Condition"
 date:   2023-01-16 21:00:00 +0900
 categories: [general,java]
 ---

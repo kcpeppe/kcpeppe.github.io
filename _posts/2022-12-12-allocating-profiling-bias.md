@@ -2,7 +2,7 @@
 layout: post
 comments: true
 title:  "The Bias in Allocation Profiling"
-exerpt: "This writeup looks at the sampling biases in a couple of popular allocation profilers"
+excerpt: "This writeup looks at the sampling biases in a couple of popular allocation profilers"
 date:   2022-12-12 07:30:00 +0900
 categories: [general,java,memory]
 tags: [Java, allocation, TLAB, memory, async profiler, JFR, VisualVM, profiling]

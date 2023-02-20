@@ -14,5 +14,13 @@
 		"url": "https://github.com/kcpeppe/regions",
 		"date": "Nov 2017",
 		"tags": ["Java","Garbage Collection","Performance", "G1"]
+	},
+	{
+		"slug": "github",
+		"name": "Latency Model",
+		"image": "latencyModel.png",
+		"url": "https://github.com/kcpeppe/microservicepausemodel",
+		"date": "Aug 2018",
+		"tags": ["Java","Garbage Collection","Performance"]
 	}
 ]

@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "JVM Ergononics"
+title:  "JVM Ergonomics"
 excerpt: "I needed a definition for JVM Ergonomics but didn't find one. This is what I proposed."
 date:   2023-02-24 09:30:00 +0900
 categories: [java]

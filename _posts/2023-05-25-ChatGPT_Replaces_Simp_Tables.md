@@ -9,9 +9,9 @@ categories: [general]
 
 I recently was cleaning out a filing cabinet when I ran across an article on SIMP tables dated June of 1975. The funny part of this article is that it was written as part of a series called "Department of Golden Oldies". SMIP tables, also known as semantic tables, can be used to generate random sentences. These sentences look like they should have some meaning but are complete nonsense.
 
-I remember that when I first ran into this article several years ago, I wrote a program that used the Simp tables to generate random sentences. My supervisor seeing this decided to have some fun with it by dropping one of the generated sentences into a project proposal. He sent the proposal to his supervisor who but a question mark over the generated sentence and then, unexpectedly, sent the proposal off for final approval.
+When I first ran into this article, I wrote a program that used the Simp tables to generate random sentences. My supervisor, seeing this, decided to have some fun with it. He used the program to generate a random sentence and then dropped it into the middle of a project proposal. He then sent the proposal to his supervisor for review. That supervisor did drop a question mark over the generated sentence but then, completely unexpectedly, sent the proposal off for final approval.
 
-Where do SIMP tables come from? The article states that although they were able to determine that the topic showed up in around 1971, no one knew where it came from. I decided to see what ChatGPT could come up with on such an obscure topic. It took me several tweaks of a ChatGPT query to finally generate this. 
+Where do SIMP tables come from? The article states that they tried to find the origins of the work but only able to determine that it appeared around 1971. I decided to see what ChatGPT could come up with on such an obscure topic. It took me several tweaks of a ChatGPT query to finally generate this. 
 
 ```
 Simp tables, also known as semantic tables, were first introduced by the linguist Zellig Harris in the 1950s. Harris developed the concept of distributional analysis, which involves analyzing the distribution of words in a language to determine their meaning and syntactic function.
@@ -24,9 +24,9 @@ In summary, simp tables were developed by Zellig Harris in the 1950s as a tool f
 ```
 <br/>
 
-My initial Google searches yielded nothing of interest but having the ChatGPT output allowed me to  find a newer reference to Charles J. Fillmore engaging in similar work. The surprise was that even with all this information in hand, I wasn't able to come up with even a passing mention of "simp tables". That said, the work that Harris and Fillmore were engaged in felt very much like how ChatGPT operates.
+My initial Google searches yielded nothing of interest but having the ChatGPT output allowed me to find a reference to Charles J. Fillmore engaging language modeling research. The surprise was that even with all this information at hand, I wasn't able to come up with even a passing mention of "simp tables". That said, the work that Harris and Fillmore were engaged in feels very much like how ChatGPT operates.
 
-At this point, I decided to re-implement the app in Java and then see if I could get ChatGPT to do the same.
+At this point, I decided to re-implement the Simp Tables app in Java and then see if I could get ChatGPT to do the same.
 
 ### The Code
 
@@ -116,7 +116,7 @@ What nonsense... what fun!!!
 
 ### ChatGPT
 
-The following is the prompt I used for ChatGPT.
+I used the following ChatGPT prompt.
 
 ```
 listA = f"""
@@ -182,7 +182,7 @@ response = get_completion(prompt)
 print(response)
 ```
 
-I ran the prompt several times.
+I then ran the prompt three times. Here is the output from this prompt
 
 ```
 1. In this regard, the incorporation of additional mission constraints necessitates that urgent consideration be applied to the greater flight-worthiness concept.
@@ -200,7 +200,7 @@ Unfortunately, the results don't appear to be very random. One of the things tha
 In this regard, the incorporation of additional mission constraints necessitates that urgent consideration be applied to the greater flight-worthiness concept.
 ```
 
-I didn't expect this to produce anything different as it's very likely that ChatGPT simply doesn't know how to generate a truly random number or at the very least, is seeding a random number generator with a constant. But just in cases, let's set the temperature to the max value of 1.0.
+I didn't expect this to produce anything different as it's very likely that ChatGPT simply doesn't know how to generate random numbers. I believe there is now a Wolfram math pack that could solve this. Let's set the temperature to the max value of 1.0 to see what that produces.
 
 ```
 Based on integral subsystem considerations, any associated supporting element must utilize and be functionally interwoven with the greater flight-worthiness concept.
@@ -208,12 +208,12 @@ Based on integral subsystem considerations, any associated supporting element mu
 Similarly, the product configuration baseline must utilize and be functionally interwoven with the fully integrated test program and the greater flight-worthiness concept.
 ```
 
-This is starting to look at wee bit better but it still ends with the exact same ending phrase.
+This is starting to look at wee bit better but it still ends with the exact same ending phrase. This is exactly opposite to what I was expecting.
 
 
 ### Conclusion
 
-It appears as though the search to uncover the patterns in language that would allow for machines to communicate using natural languages started much farther back in history than I would have initially imagined. My guess is that Simp tables were created by someone or a group of people who decided to have fun with the research. Similar to when a small group of us decided to take a poke at the methodology wars by coming up with "Defect Driven Design" (D^3, pronounced D-cubed). As I've always said, original ideas are exceptionally rare and because of this I'm never surprised to learn that any at task we're engaged in today is on the backs of others. In this case, researchers, likely driven by cryptography, didn't have the machines to work at scale needed to have more than an academic impact at best. Even so, the work they engaged in was pretty sophisticated and are an essential to the work being done today. I'll let ChatGPT have the final word here. If you can judge the veracity please let me know how well it stands up.
+It appears as though the search to uncover the patterns in language that would allow for machines to communicate using natural languages started much farther back in history than I would have initially imagined. My guess is that Simp tables were created by someone or a group of people who decided to have fun with the research. I recall that a small group of us decided to take a poke at the methodology wars that were in full flight in the 90s. We came up with the "perfect" methodology which we called "Defect Driven Design/Development" (D^3, pronounced D-cubed). Try finding a link to that today! But, more to the point. The language modeling work that researchers were engaged in prior to the advent of AI was not only exceptionally sophisticated, it looks like it was essential to the work that we are engaged in today. And on that note, I'll let ChatGPT have the final word here. If you can judge the veracity please let me know how well it stands up.
 
 ```
 Large language models, which are computer programs capable of generating human-like language, have a rich history dating back to the 1940s. Early work in natural language processing (NLP) focused on rule-based systems, which relied on manually created grammars and dictionaries to analyze and generate language. However, with the advent of machine learning and the availability of large datasets, researchers began exploring statistical approaches to NLP. In the 1980s and 1990s, researchers developed probabilistic models such as Hidden Markov Models and n-gram models, which could predict the likelihood of a given sequence of words. In recent years, the development of deep learning techniques and the availability of massive amounts of data have led to the creation of large language models such as GPT-3, which can generate highly coherent and sophisticated language. These models are now being used in a wide range of applications, from language translation to chatbots and virtual assistants.

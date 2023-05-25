@@ -10,7 +10,7 @@ tags: [Java,Performance]
 
 The use of AI in performance diagnostic work isn't new. We used forms of AI at JClarity and continue to do so within the Java Engineering group inside Microsoft to develop a diagnostic engine. This engine is designed to automate the characterization of performance regressions. The big news is that with ChatGPT and Semantic Kernel, AI is much more accessible. The question that we're currently trying to answer is can LLMs help us produce a better experience with performance diagnostics. To answer this question I started down the path of "Prompt Engineering" to see if ChatGPT could generate performance analysis reports that were in line with my analysis of a set of known problems. Here is a summary of what has been done so far.
 
-###The Problem
+### The Problem
 
 I offered up the following output from vmstat. This output was collected from a system that 
 has already been tuned so the underlying performance bottleneck is known. It should also be noted that the underlying regression had been looked at by a team for several months without them finding the root cause. To be fair to this team, this is the normal outcome of these types of investigations. Helping teams work through complex diagnostics was the motivation for jPDM (Java Performance Diagnostic Model) which was then used to drive Illuminate, our diagnostic engine. So, lets dive in.
@@ -50,12 +50,12 @@ Without getting too deeply into the subject, the answer is that the high rate of
 
 Let's see if we can get a ChatGPT to produce a similar diagnosis using this data set.
 
-###Prompt Engineering
+### Prompt Engineering
 
 Prompt engineering is the task of formulating a query provides instructions as to what is needed to be done. Formulating a good prompt is key in producing sensible output. In this case, the hope is that a report directing us to the bottleneck and if we're really lucky, some hints as to how to resolve it.
 <br/>
 
-####Prompt 1.0
+#### Prompt 1.0
 
 Even though it is not recommended, I decided to keep the first prompt terse just to understand what it would produce. The temperature is set to 0 which should result in multiple runs producing a stable result. The first prompt is as follows.
 

@@ -14,6 +14,9 @@ collections:
   project:
     output: true
     permalink: /project/:path/
+  jpdm:
+    output: true
+    permalink: /jpdm/:path/
 
 social:
 #     github:kcpeppe
@@ -41,6 +44,8 @@ urls:
       url: /contact/
     - text: My Projects
       url: /projects/
+    - text: Performance Diagnostic Model
+      url: /jpdm/
     - text: XML Feed
       url: /feed.xml
 

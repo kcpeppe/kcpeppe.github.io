@@ -31,17 +31,24 @@ The table below lists all of the gear ratios on my bike.
 
 <br>
 
-| Teeth | 22 | 32 | 44 |
-|-------|----|----|----|
-|34|0.647|0.941|1.294|
-|30|0.733|1.067|1.467|
-|26|0.846|1.231|1.692|
-|23|0.957|1.391|1.913|
-|20|1.100|1.600|2.200|
-|18|1.222|1.778|2.444|
-|15|1.467|2.133|2.933|
-|13|1.692|2.462|3.385|
-|11|2.000|2.909|4.000|
+<table>
+<tr>
+<th style="width:100px">Teeth</th>
+<th style="width:100px">22</th>
+<th style="width:100px">32</th>
+<th style="width:100px">44</th>
+</tr>
+<tr></tr>
+<tr><td>34</td><td>0.647  </td><td>0.941</td><td>1.294</td></tr>
+<tr><td>30</td><td>0.733  </td><td>1.067</td><td>1.467</td></tr>
+<tr><td>26</td><td>0.846  </td><td>1.231</td><td>1.692</td></tr>
+<tr><td>23</td><td>0.957  </td><td>1.391</td><td>1.913</td></tr>
+<tr><td>20</td><td>1.100  </td><td>1.600</td><td>2.200</td></tr>
+<tr><td>18</td><td>1.222  </td><td>1.778</td><td>2.444</td></tr>
+<tr><td>15</td><td>1.467  </td><td>2.133</td><td>2.933</td></tr>
+<tr><td>13</td><td>1.692  </td><td>2.462</td><td>3.385</td></tr>
+<tr><td>11</td><td>2.000  </td><td>2.909</td><td>4.000</td></tr>
+</table>
 
 <br/>
 As can seen by the numbers, there is a fairly even spread of choice and I can make meaningful adjustments that are not far away from the target gear ratio. For example, from the bottom of the climb on my most frequented route I'll approach in my 44x15 but then drop to a 32x18 with one adjustment with each shifter as I start up the 7% grade. This is also a tool I would use when evaluating if a chain ring/cassette combination is going to work for me on a new bike. For example, I know that I can struggle up my favorite 15% grade with a 0.941 ratio but I'd much prefer to spin the 0.846 and if I don't have it that day, I have the 0.647 at my disposal.

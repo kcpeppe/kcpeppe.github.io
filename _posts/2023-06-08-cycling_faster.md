@@ -33,7 +33,7 @@ The table below lists all of the gear ratios on my bike.
 
 <table>
 <tr>
-<th style="width:100px">Teeth</th>
+<th style="width:100px">Gear Ratios</th>
 <th style="width:100px">22</th>
 <th style="width:100px">32</th>
 <th style="width:100px">44</th>
@@ -69,11 +69,40 @@ Undoubtedly the most important aspect to a good pedal stroke is how the seat is 
 What gear should you be using? Think of it this way, how many reps can you achieve when lifting 20kg as apposed to how many when lifting 1kg. With cycling you'll be performing anywhere from 3000 to 5500 reps per hour. As my very fit friend discovered, it was much easier to perform many reps with a smaller gear than it was to perform fewer with a larger one. The general recommendation is to use a gear that allows you to spin at about 80RPMs. This will allow you to maintain forward momentum with a minimal amount of incremental effort, ie like lifting 1kg 1000s of times per hour. This is what is known as the sweet spot. You'll know you're in the sweet spot when it feels as if you're able to maintain crank momentum simply with the inertia of your foot moving through the dead-zone with minimal power being applied in the down stroke. Over time and with a bit of experimentation, you'll come to know each gears sweet spot. Do know that your ability to spin larger gears will get better as you get fitter and stronger. For example, moving from a 44x18 to a 44x15 at 80RPM would see your speed increase from just under ((44/18)*2.2*80*60/1000) 26km/hr to about ((44/15)*2.2*80*60/1000) 31km/hr. It takes a certain amount of extra power to spin the 44x15 but once you have that power, the extra speed will be very satisfying.
 <br/>
 <br/>
+### Do Crank Arms Matter?
+<br/>
+A crank arm is a lever, another simple machine. As is the case with any lever, the farther away from the pivot point, the less force you have to apply to move a load. With a crank arm, this distance is measured from the middle of the pedal to the middle of the axle. How long can a crank arm be? That is dependent on how long your leg is. One can mess with the geometry of the bike to be able to take advantage of very long crank arms but at some point it won't be comfortable to pedal as it will require far too much bend in the knee. The range for crank arm length is 165 shorter people and 175cm for taller. A length of 170cm is common for an average sized person. Does this have an effect on gear ratios? Absolutely! But before we do this, let's consider the effects of crank arm length on power.
+
+Power applied to forward motion is the product of the force applied to the pedals times crank, the crank arm length and the cadence. The force applied to the pedal times the crank arm length is torque. For a constant power output, the variables are; higher cadence, lower torque or, lower cadence, higher torque. Higher torque can be achieved with more force on the pedal or a longer crank arm. Now lets see the effect by applying this to the gear ratio chart above using both a 165cm and a 175cm crank arm length.
+
+<br/>
+<table>
+<tr>
+<th style="width:100px">Crank Arm Ratios</th>
+<th style="width:100px">22 (165/175)</th>
+<th style="width:100px">32 (165/175)</th>
+<th style="width:100px">44 (165/175)</th>
+</tr>
+<tr></tr>
+<tr><td>34</td><td>1.373/1.294</td><td>1.996/1.882</td><td>2.745/2.588</td></tr>
+<tr><td>30</td><td>1.556/1.467</td><td>2.263/2.133</td><td>3.111/2.933</td></tr>
+<tr><td>26</td><td>1.795/1.692</td><td>2.611/2.462</td><td>3.590/3.385</td></tr>
+<tr><td>23</td><td>2.029/2.005</td><td>2.951/2.783</td><td>4.058/3.826</td></tr>
+<tr><td>20</td><td>2.333/2.200</td><td>3.394/3.200</td><td>4.667/4.400</td></tr>
+<tr><td>18</td><td>2.593/2.444</td><td>3.771/3.556</td><td>5.185/4.889</td></tr>
+<tr><td>15</td><td>3.111/2.933</td><td>4.525//4.267</td><td>6.222/5.867</td></tr>
+<tr><td>13</td><td>3.590/3.385</td><td>5.221/4.923</td><td>7.179/6.769</td></tr>
+<tr><td>11</td><td>4.242/4.000</td><td>6.171/5.818</td><td>8.485/8.000</td></tr>
+</table>
+
+While the longer crank arm length may only provide a 2-3% advantage, it can also be used to accommodate the use of different sized chain ring/cog combinations and this might offer you better comfort.
+<br/>
+<br/>
 ### What about Hills?
 <br/>
-Hills follow the exact same principal. You want to expend the same amount of power on a hill as you would on the flats. This means you need to find a gear where you can maintain a 60-90 rpm. In reality, the spins on a hill will likely drop to about 60 and that's ok. One of my favorite rides involves sections that are 13% and 15% grades. On those sections I often shamelessly drop to my 22x34 to keep it at 60rpms. Doing the maths, that is 0.647 * 2.2m * 60 rpm * 60 minute/hr = 5.1 km/hr. Yes, sometimes people are walking beside me at the same speed as I'm climbing. And I even once had a runner blow by me, very impressive. I could use a larger gear but that cause me to lose control of my breathing and would take more power and that would compromise the rest of my ride.
+Gearing allows us to flatten out a climb. You want to expend the same amount of power on a hill as you would on the flats. To do so means you need to find a gear where you can spin. In reality, the spins on a hill will likely drop to about 60 and that's ok. One of my favorite rides involves sections that are 13% and 15% grades. On those sections I often shamelessly drop to my 22x34 to keep it at 60rpms. Doing the maths, that is 0.647 * 2.2m * 60 rpm * 60 minute/hr = 5.1 km/hr. Yes, sometimes people are walking beside me at the same speed as I'm climbing. And I even once had a runner blow by me on the 15% grade which I found to be very impressive. I could use a larger gear but that would require me to use more force on the pedals and cause me to lose control of my breathing. All this would would compromise the rest of my ride so I'd prefer to stick to the smaller gears.
 
-One other technique that is important especially when climbing is the ability to pedal efficiently when out of the saddle. This is incredibly useful for when you're looking at a short climb where you can use momentum to help you up and over the top. It's also useful on the longer climbs as it lets you change the angles which can help rest some muscles on the climb. Returning to my favorite climbs, there are few short steep sections where standing on the pedals makes things easier.
+One other technique that is important especially when climbing is the ability to pedal efficiently when out of the saddle. This is incredibly useful when you are in rolling hills where the downs give you enough momentum to stand up to get over the top of the next rise. It's also useful on the longer climbs as it lets you change the angles which can help rest some muscles on the climb. On my favored rides the climbs have a few short steep sections where standing on the pedals makes things easier.
 <br/><br/>
 ### Shifting Gears
 <br/>

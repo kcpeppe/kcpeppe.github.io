@@ -48,6 +48,8 @@ urls:
 #      url: /jpdm/
     - text: XML Feed
       url: /feed.xml
+    - text: Java Specialists Superpack
+      url: https://javaspecialists.teachable.com/p/superpack23?affcode=92815_mbye0sif
 
 url: "https://www.kodewerk.com"
 baseurl: ""

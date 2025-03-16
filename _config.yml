@@ -14,9 +14,9 @@ collections:
   project:
     output: true
     permalink: /project/:path/
-#  jpdm:
-#    output: true
-#    permalink: /jpdm/:path/
+  book:
+    output: true
+    permalink: /book/:path/
 
 social:
 #     github:kcpeppe
@@ -44,14 +44,14 @@ urls:
       url: /contact/
     - text: My Projects
       url: /projects/
-#    - text: Performance Diagnostic Model
-#      url: /jpdm/
+    - text: Performance Diagnostic Model
+      url: /book/
     - text: XML Feed
       url: /feed.xml
     - text: Java Specialists Superpack
       url: https://javaspecialists.teachable.com/p/superpack23?affcode=92815_mbye0sif
 
-url: "https://www.kodewerk.com"
+url: "/index.html/"
 baseurl: ""
 paginate: 20
 per_page: 20

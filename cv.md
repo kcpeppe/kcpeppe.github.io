@@ -31,10 +31,11 @@ I am a **Java Champion**, co-founder of **jClarity**, a company focused on Java 
 ## Professional Experience  
 
 ### Microsoft *(2019 – Present)*  
-**Java Performance Engineer**  
-- Joined Microsoft after its acquisition of jClarity.  
+**Principal Engineer**  
+- Joined Microsoft as part of its acquisition of jClarity.  
 - Focused on building tools to optimize Java workloads on Microsoft Customers.  
-- Worked on JVM performance tuning and cloud-native Java solutions.  
+- Helped tune 1P customer workloads.
+- Working on improving GC performance in the JVM. [Automatic Heap Sizing preview JEP](https://bugs.openjdk.org/browse/JDK-8350152)  
 
 ### jClarity *(2011 – 2019)*  
 **Co-founder & CTO**  
@@ -92,6 +93,8 @@ I am a **Java Champion**, co-founder of **jClarity**, a company focused on Java 
 ---
 
 ## Some Publications  
+- **Java Performance Tuning**, [Safari Webinar](https://bugs.openjdk.org/browse/JDK-8350152)
+- **Memory Efficient Java**, [Safari Webinar](https://www.oreilly.com/live-events/memory-efficient-java/0636920457060/?_gl=1*ga02z*_ga*MTk0MjM3NzM3MC4xNzM4OTM3MjAw*_ga_092EL089CH*MTc0MjE0MTA5OS4zLjEuMTc0MjE0MTM1OC40Mi4wLjA.)
 - Helped established **JavaPerformanceTuning.com**, a leading resource for JVM performance tuning information.  
 - Contributor to [InfoQ articles](http://www.infoq.com/author/Kirk-Pepperdine).  
 - **97 Things Every Programmer Should Know**, O’Reilly Media, ISBN 0596809484.  

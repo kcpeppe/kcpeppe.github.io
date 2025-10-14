@@ -23,7 +23,7 @@ The task at hand is to ensure checkInteger runs 3 times faster than it currently
 
 
 Dataset | Correct # | time ms | Requirement (ms)
---- | ---: | ---: | ---:
+---------- | ----------: | ----------: | ----------:
 1 | 1000000 | 783 | 261
 2 | 500000 | 775 | 258
 3 | 300000 | 959 | 319
@@ -43,7 +43,7 @@ Now that the benchmark has been established, let's sort what we need to do to ma
 
 From this profile we can see that bottleneck is in java.io.DataInputStream.readUTF(). This method, called in the testDataset method, isn't part of checkInteger. This method is reading in the test data. Before jumping into resolving this bottleneck, let's step back to get a bigger picture of what all of this means.
 
-**Anatomy of the Benchmark**
+***Anatomy of the Benchmark***
 
 Benchmarks consist of two pieces, the unit under test (UUT) and the test harness. From the perspective CheckIntegerTestHarness, the UUT is the checkInteger method and everything else is test harness. What our profile tests us is that the bottleneck is in the test harness. This violates a fundamental rule of benchmarking. That is, the bottleneck should never be in the test harness. A bottleneck in the test harness will very likely throttle, or otherwise affect, how load is applied to the UUT. The net effect is that problems test harness will invalidate the results produced by the benchmark. Let's fix the test harness by wrapping the reader with a BufferedInputStream and then re-establish the baseline. If all is well, the baseline should remain the same and the bottleneck should shift into checkInteger. Here is the fix.
 
@@ -52,19 +52,20 @@ Benchmarks consist of two pieces, the unit under test (UUT) and the test harness
 The chart below is the new baseline.
 
 Dataset | Correct # | time ms
---- | ---: | ---:
+---------- | ----------: | ----------:
 1 | 1000000 | 52  
 2 | 500000 | 57 
 3 | 300000 | 171
 
 
-**Why did the time change**
+
+**Why did the times change**
 
 Wow, these numbers are surprising and they suggest that there is a problem with the timer. This points to another fundamental rule of benchmarking, always check the timers. In many cases timings are used as the measure of success or will guide future decisions. This implies that getting the timers right makes it one of the first things that need to be validated. How can we validate? The answer can vary on a case by case basis but in general, if the UUT is doing nothing, then the timers should reflect that with a measure of 0 (time units go here). In this case let's replace the UUT with a method that returns true (or false) without performing the calculation. The results are below.
 
 
 Dataset | Correct # | time ms
---- | ---: | ---:
+---------- | ----------: | ----------:
 1 | 1000000 | 32  
 2 | 500000 | 28 
 3 | 300000 | 23
@@ -117,7 +118,7 @@ In this run, elapsed time has been 'fixed' by having it wrap the call to checkIn
 Running the null UUT produces these results.
 
 Dataset | Correct # | time ms
---- | ---: | ---:
+---------- | ----------: | ----------:
 1 | 1000000 | 15  
 2 | 500000 | 15 
 3 | 300000 | 17
@@ -133,7 +134,7 @@ Let's eliminate the read time by preloading all of the data into an ArrayList. W
 
 
  Dataset | Correct # | time ms
---- | ---: | ---:
+---------- | ----------: | ----------:
 1 | 1000000 | 2  
 2 | 500000 | 1 
 3 | 300000 | 0
@@ -155,7 +156,7 @@ This produces the desired result so let's re-establish the baseline by reverting
 Here is the new baseline with the target improvements.
 
 Dataset | Correct # | time ms | Requirement (ms)
---- | ---: | ---: | ---:
+---------- | ----------: | ----------: | ----------:
 1 | 1000000 | 19 | 7
 2 | 500000 | 20 | 7
 3 | 300000 | 136 | 106

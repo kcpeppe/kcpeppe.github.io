@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "A Puzzling Performance Puzzler"
+title:  "Solution to a Puzzling Performance Puzzler"
 excerpt: "What follows is my solution so don't read any further. Spoiler alert, solution about to start."
 date:   2025-10-14 00:30:00 +0900
 categories: [java,performance]

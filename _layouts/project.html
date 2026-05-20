@@ -1,70 +1,28 @@
 ---
 layout: default
 ---
-<article class="post">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-    <hr />
-  </header>
+<article class="content">
+  <h1>{{ page.title }}</h1>
 
-  <div class="post-content">
-    {{ content }}
+  {{ content }}
 
-    {% assign p_array = "" | split:"|"  %}
-    {% for project in site.project %}
-      {% capture p_slug %}{{ project.url | split:"/" | last }},{{ project.url }}{% endcapture %}
-      {% assign p_slug_arr = p_slug | split:"," %}
-      {% assign p_array = p_array | push: p_slug_arr  %}
-    {% endfor %}
-
-    <div class="projects">
-      {% include project_tags.html %}
-      
-      {% for i in site.data.projects %}
-      <div class="project-item project-outer" data-tags='{{ i.tags | jsonify | downcase }}'>
-        <div class="project-inner">
-          <a href="/static/projects/{{ i.image }}" class="thickbox">
-            <div class="project-img bordered" style="background-image: url('/static/projects/{{ i.image }}');"></div>
-          </a>
-          {% assign p_url = nil %}
-          {% for pr in p_array %}
-            {% if pr contains i.slug %}
-              {% assign p_url = pr[1] %}
-            {% endif %}
-          {% endfor %}
-
-          {% if p_url == nil %}{% assign p_url = i.url %}{% endif %}
-          {% if p_url %}
-            <a class="project-detail" href="{{ p_url }}">
-          {% endif %}
-            <h3 class="project-headlines">{{ i.name }}</h3>
-          {% if p_url %}
-            </a>
-          {% endif %}
-
-          <div class="project-content">
-            <div class="tag-holder">
-              {% if i.tags %}
-                {% for j in i.tags %}
-                  <span class="tags tag-filter" data-tag="{{ j | downcase }}"><a href="#{{ j }}">{{ j }}</a></span>
-              <!-- div class="btn-github" style="float:right;">
-                <iframe src="https://ghbtns.com/github-btn.html?user=kcpeppe&repo=regions&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe>
-                <iframe src="https://ghbtns.com/github-btn.html?user=kcpeppe&repo=regions&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe>
-              </div -->
-                {% endfor %}
-              {% endif %}
+  <div class="project-grid">
+    {% for i in site.data.projects %}
+      <a class="project-card" href="{{ i.url }}" target="_blank" rel="noopener">
+        <div class="project-image" style="background-image: url('/static/projects/{{ i.image }}');"></div>
+        <div class="project-body">
+          <h3 class="project-name">{{ i.name }}</h3>
+          {% if i.tags %}
+            <div class="project-tags">
+              {% for tag in i.tags %}<span class="project-tag">{{ tag }}</span>{% endfor %}
             </div>
-          </div>
+          {% endif %}
           <div class="project-footer">
-            {% if i.url %}
-              <a href="{{ i.url }}" class="project-link" target="_blank"><i class="fa fa-globe"></i> View</a>
-            {% endif %}
-            <span class="project-timeline">{{ i.date }}</span>
+            <span class="project-date">{{ i.date }}</span>
+            <span class="project-link"><i class="fa fa-external-link"></i> View</span>
           </div>
         </div>
-        <hr>
-      </div>
-      {% endfor %}
-    </div>
+      </a>
+    {% endfor %}
   </div>
 </article>

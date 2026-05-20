@@ -2,44 +2,81 @@
 layout: default
 ---
 
-<div id="home">
-  <h1>{{ site.title }}</h1>
-  <hr />
+<h1 class="section-title">Services</h1>
 
-  <ol class="posts">
-    {% for post in paginator.posts %}
-      <li><a href="{{ post.url }}">{{ post.title }}</a> &raquo; <i><span>{{ post.date | date_to_string }}</span></i></li>
-    {% endfor %}
-  </ol>
+<div class="carousel">
+  <div class="carousel-viewport">
+    <div class="carousel-track" id="service-carousel-track">
+      <a class="card" href="/gc-tuning/">
+        <i class="fa fa-recycle card-icon" aria-hidden="true"></i>
+        <h3>GC Tuning</h3>
+        <p>GC log analysis and collector tuning across G1, ZGC, Shenandoah, Parallel, and Azul C4. Reducing pause times, allocation pressure, and the latency tax that garbage collection puts on your workload.</p>
+        <span class="more">Learn more &rarr;</span>
+      </a>
 
-  <!-- Pagination links -->
-  {% if paginator.total_pages > 1 %}
-    <ul class="pagination pagination-sm">
-      {% if paginator.previous_page %}
-        <li><a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo;</a></li>
-      {% else %}
-        <li class="disabled"><span aria-hidden="true">&laquo;</span></li>
-      {% endif %}
+      <a class="card" href="/very-large-heaps/">
+        <i class="fa fa-database card-icon" aria-hidden="true"></i>
+        <h3>Very Large Heap Analysis</h3>
+        <p>Analyzing Java heaps in the hundreds of gigabytes and into the terabyte range &mdash; using tooling specifically built to scale beyond standard approaches.</p>
+        <span class="more">Learn more &rarr;</span>
+      </a>
 
-      <li><a href="/">First</a></li>
+      <a class="card" href="/workshops/">
+        <i class="fa fa-graduation-cap card-icon" aria-hidden="true"></i>
+        <h3>Workshops</h3>
+        <p>Forget tips and tricks with a version shelf life. Learn jPDM: a structured, repeatable approach to performance diagnostics. Find regressions faster, surface root causes you didn't know about with confidence &mdash; regardless of which version of Java you're on.</p>
+        <span class="more">Learn more &rarr;</span>
+      </a>
 
-      {% for page in (1..paginator.total_pages) %}
-        {% if page == paginator.page %}
-          <li class="active"><a>{{ page }}<span class="sr-only">(current)</span></a></li>
-        {% elsif page == 1 %}
-          <li><a href="/">{{ page }}</a></li>
-        {% else %}
-          <li><a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a></li>
+      <a class="card" href="/application-tuning/">
+        <i class="fa fa-tachometer card-icon" aria-hidden="true"></i>
+        <h3>Application Tuning</h3>
+        <p>Finding and fixing performance bottlenecks in Java applications &mdash; code, architecture, JVM configuration, allocation patterns, or elsewhere in the system. Can result in reduced EC2 costs and improved p99 latencies.</p>
+        <span class="more">Learn more &rarr;</span>
+      </a>
+
+      <a class="card" href="/benchmarking/">
+        <i class="fa fa-line-chart card-icon" aria-hidden="true"></i>
+        <h3>Benchmarking</h3>
+        <p>A benchmark is only useful if it measures what you think it's measuring. Coordinated omission, harness effects, timing artifacts, environmental noise &mdash; there are many ways for that to go wrong. I design and review benchmarks less prone to those failures.</p>
+        <span class="more">Learn more &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="carousel-controls">
+    <span class="carousel-position" id="service-carousel-pos">1&ndash;3 of 5</span>
+    <button class="carousel-arrow" id="service-carousel-prev" aria-label="Previous services" disabled>
+      <i class="fa fa-chevron-left"></i>
+    </button>
+    <button class="carousel-arrow" id="service-carousel-next" aria-label="Next services">
+      <i class="fa fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
+<section class="notes-section">
+  <div class="notes-header">
+    <h2>Recent Notes</h2>
+    <a class="view-all" href="/notes/">View all notes &rarr;</a>
+  </div>
+
+  <div class="post-grid">
+    {% for post in paginator.posts limit:3 %}
+      <a class="post-card" href="{{ post.url }}">
+        <div class="meta">
+          {% if post.categories.size > 0 %}
+            <span class="category">{{ post.categories | first | capitalize }}</span>
+            <span class="dot"></span>
+          {% endif %}
+          <span class="date">{{ post.date | date: "%d %b %Y" }}</span>
+        </div>
+        <h3>{{ post.title }}</h3>
+        {% if post.excerpt %}
+          <p>{{ post.excerpt | strip_html | truncatewords: 28 }}</p>
         {% endif %}
-      {% endfor %}
-
-      <li><a href="/page/{{ paginator.total_pages }}/">Last</a></li>
-
-      {% if paginator.next_page %}
-        <li><a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">&raquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-      {% endif %}
-    </ul>
-  {% endif %}
-</div><!-- end #home -->
+        <span class="more">Read more &rarr;</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>

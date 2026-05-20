@@ -1,0 +1,25 @@
+---
+layout: default
+title: Notes
+permalink: /notes/
+---
+
+<h1 class="section-title">Notes</h1>
+
+<div class="notes-archive">
+  {% for post in site.posts %}
+    <a class="archive-entry" href="{{ post.url }}">
+      <div class="archive-meta">
+        {% if post.categories.size > 0 %}
+          <span class="category">{{ post.categories | first | capitalize }}</span>
+          <span class="dot"></span>
+        {% endif %}
+        <span class="date">{{ post.date | date: "%d %b %Y" }}</span>
+      </div>
+      <h3 class="archive-title">{{ post.title }}</h3>
+      {% if post.excerpt %}
+        <p class="archive-excerpt">{{ post.excerpt | strip_html | truncatewords: 28 }}</p>
+      {% endif %}
+    </a>
+  {% endfor %}
+</div>

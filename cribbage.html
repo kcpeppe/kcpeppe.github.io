@@ -122,6 +122,56 @@
     text-transform:uppercase;margin-top:6px}
 
   @media(prefers-reduced-motion:reduce){*{transition:none!important}.cut .card{transform:none}}
+
+  /* ---- how-to-score guide (modal popup) ---- */
+  .btn-guide{margin-top:24px;background:none;border:none;color:var(--muted);
+    font-family:var(--mono);font-size:12px;letter-spacing:.03em;cursor:pointer;
+    border-bottom:1px dotted var(--accent-dim);padding:3px 0;border-radius:0}
+  .btn-guide:hover{color:var(--accent)}
+  .btn-guide b{color:var(--accent);font-weight:600}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);
+    display:none;align-items:flex-start;justify-content:center;z-index:50;
+    padding:clamp(12px,4vh,48px) 12px;overflow-y:auto}
+  .overlay.open{display:flex}
+  .modal{position:relative;width:100%;max-width:660px;background:#0b1410;
+    border:1px solid var(--accent-dim);border-radius:12px;
+    box-shadow:0 24px 60px rgba(0,0,0,.6);padding:clamp(22px,4vw,38px);margin:auto}
+  .modal h2{font-family:var(--mono);font-weight:600;letter-spacing:.12em;
+    text-transform:uppercase;font-size:15px;color:var(--accent);margin:0 0 6px}
+  .modal .lead{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0 0 22px}
+  .modal .lead b{color:var(--text);font-weight:600}
+  .x{position:absolute;top:12px;right:14px;background:none;border:none;
+    color:var(--muted);font-size:24px;line-height:1;cursor:pointer;padding:2px 8px;border-radius:6px}
+  .x:hover{color:var(--text);background:var(--felt)}
+
+  .gvalues{display:flex;gap:20px;justify-content:center;margin:0 0 8px;flex-wrap:wrap}
+  .gvalue{display:flex;flex-direction:column;align-items:center;gap:7px}
+  .gvalue .cap{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .gvalue .cap b{color:var(--accent)}
+
+  .grule{padding:18px 0;border-top:1px solid var(--line)}
+  .gname{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  .ghand{display:flex;align-items:flex-end;gap:18px;margin-bottom:14px;flex-wrap:wrap}
+  .ghand .gcards{display:flex;gap:7px}
+  .ghand .gcut{display:flex;flex-direction:column;align-items:center;gap:5px;
+    padding-left:18px;border-left:1px solid var(--line)}
+  .ghand .gcut-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted)}
+  .ghand .card{width:52px;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+  .ghand .card .idx{font-size:11px}
+  .ghand .card .suit{font-size:21px}
+  .ghand .card.hl{box-shadow:0 0 0 2px var(--accent),0 0 14px rgba(53,208,127,.42)}
+  .ghand .card.dim{opacity:.28}
+  .gcount{font-family:var(--mono);font-size:13px;color:var(--text);line-height:1.55;margin-bottom:9px}
+  .gcount b{color:var(--accent)}
+  .gnote{font-size:13px;color:var(--muted);line-height:1.6}
+  .gnote b{color:var(--text);font-weight:600}
+  .gtogether{margin-top:28px}
+  .gtogether>h2{margin-bottom:6px}
+  .gclose-note{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--muted);line-height:1.6;font-style:italic}
 </style>
 </head>
 <body>
@@ -159,6 +209,15 @@
     <div class="stat"><div class="val" id="sGuesses">0</div><div class="lbl">Guesses</div></div>
   </div>
 
+  <button class="btn-guide" id="openGuide">New to cribbage? <b>How to count a hand</b></button>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="How to count a cribbage hand">
+    <div class="modal">
+      <button class="x" id="closeGuide" aria-label="Close">&times;</button>
+      <div id="guideBody"></div>
+    </div>
+  </div>
+
 <script>
 (function(){
   "use strict";
@@ -173,15 +232,15 @@
   ];
   var LABELS = ["","A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
-  function deal5(){
+  function deal6(){
     var deck = [];
     for(var s=0;s<4;s++) for(var r=1;r<=13;r++) deck.push({rank:r,suit:s});
-    // Fisher-Yates, take 5
+    // Fisher-Yates, take 6
     for(var i=deck.length-1;i>0;i--){
       var j=Math.floor(Math.random()*(i+1));
       var t=deck[i];deck[i]=deck[j];deck[j]=t;
     }
-    return deck.slice(0,5); // [0..3] hand, [4] starter
+    return deck.slice(0,6);
   }
 
   // ---- scoring -----------------------------------------------------------
@@ -269,6 +328,38 @@
     };
   }
 
+  // ---- keep selection ----------------------------------------------------
+  // Deal six; keep the four cards with the highest expected show. For each of
+  // the 15 four-card keeps, average the 5-card score over every possible cut
+  // (the 46 cards not dealt) and keep the best average. The revealed cut is
+  // drawn from that same 46-card set, so the two discards can never turn up
+  // as the cut, and the EV and the reveal share one card universe.
+  function remainingDeck(six){
+    var seen={};
+    six.forEach(function(c){ seen[c.rank+"-"+c.suit]=true; });
+    var deck=[];
+    for(var s=0;s<4;s++) for(var r=1;r<=13;r++)
+      if(!seen[r+"-"+s]) deck.push({rank:r, suit:s});
+    return deck; // 46 cards
+  }
+
+  function bestKeep(six){
+    var cuts = remainingDeck(six);
+    var bestSum=-1, bestKeeps=[];           // compare summed score (exact int)
+    for(var a=0;a<6;a++) for(var b=a+1;b<6;b++){
+      var keep=[];
+      for(var k=0;k<6;k++) if(k!==a && k!==b) keep.push(six[k]);
+      var sum=0;
+      for(var c=0;c<cuts.length;c++)
+        sum += scoreHand(keep.concat([cuts[c]])).total;
+      if(sum>bestSum){ bestSum=sum; bestKeeps=[keep]; }
+      else if(sum===bestSum){ bestKeeps.push(keep); }
+    }
+    var keep = bestKeeps[Math.floor(Math.random()*bestKeeps.length)]; // random tie-break
+    var cut  = cuts[Math.floor(Math.random()*cuts.length)];
+    return keep.concat([cut]); // [0..3] kept hand, [4] starter
+  }
+
   // ---- rendering ---------------------------------------------------------
   function cardEl(card){
     var suit = SUITS[card.suit];
@@ -352,7 +443,7 @@
   }
 
   function newRound(){
-    hand = deal5();
+    hand = bestKeep(deal6());
     score = scoreHand(hand);
     strikes = 0;
     roundActive = true;
@@ -427,10 +518,127 @@
     }
   }
 
+  // ---- how-to-score guide ------------------------------------------------
+  function gc(r,s){ return {rank:r, suit:s}; }
+
+  // render a 5-card teaching hand; hl = indices to highlight (4 = the cut)
+  function guideHand(cards, hl){
+    var wrap=document.createElement("div"); wrap.className="ghand";
+    var cs=document.createElement("div"); cs.className="gcards";
+    for(var i=0;i<4;i++){
+      var el=cardEl(cards[i]);
+      el.classList.add(hl.indexOf(i)>=0 ? "hl" : "dim");
+      cs.appendChild(el);
+    }
+    var cut=document.createElement("div"); cut.className="gcut";
+    var ce=cardEl(cards[4]);
+    ce.classList.add(hl.indexOf(4)>=0 ? "hl" : "dim");
+    var lab=document.createElement("div"); lab.className="gcut-label"; lab.textContent="cut";
+    cut.appendChild(ce); cut.appendChild(lab);
+    wrap.appendChild(cs); wrap.appendChild(cut);
+    return wrap;
+  }
+
+  function gRule(name, cards, hl, count, note){
+    var b=document.createElement("div"); b.className="grule";
+    var h=document.createElement("div"); h.className="gname"; h.textContent=name; b.appendChild(h);
+    b.appendChild(guideHand(cards, hl));
+    var c=document.createElement("div"); c.className="gcount"; c.innerHTML=count; b.appendChild(c);
+    var n=document.createElement("div"); n.className="gnote"; n.innerHTML=note; b.appendChild(n);
+    return b;
+  }
+
+  function valueCard(card, cap){
+    var w=document.createElement("div"); w.className="gvalue";
+    var el=cardEl(card); el.classList.add("hl"); w.appendChild(el);
+    var c=document.createElement("div"); c.className="cap"; c.innerHTML=cap; w.appendChild(c);
+    return w;
+  }
+
+  function buildGuide(){
+    var body=$("guideBody");
+    var head=document.createElement("div");
+    head.innerHTML='<h2>How to count a hand</h2>'+
+      '<p class="lead">In cribbage you score five cards: the four in your hand plus the '+
+      '<b>cut</b> \u2014 the turned-up card everyone shares. There are five ways to score, and '+
+      'you simply add up everything you can find. In each example below the highlighted cards '+
+      'are the ones doing the scoring.</p>';
+    body.appendChild(head);
+
+    var vals=document.createElement("div"); vals.className="gvalues";
+    vals.appendChild(valueCard(gc(1,0),  'A = <b>1</b>'));
+    vals.appendChild(valueCard(gc(7,2),  '7 = <b>7</b>'));
+    vals.appendChild(valueCard(gc(13,3), 'K = <b>10</b>'));
+    body.appendChild(vals);
+    var vcap=document.createElement("p"); vcap.className="lead";
+    vcap.style.textAlign="center";
+    vcap.innerHTML="Number cards are worth their face value; J, Q, K count as 10; the ace is 1.";
+    body.appendChild(vcap);
+
+    body.appendChild(gRule("Fifteens",
+      [gc(5,0),gc(6,2),gc(9,3),gc(10,1),gc(2,0)], [0,1,2,3],
+      "5 + 10 = 15, and 6 + 9 = 15 \u2014 two fifteens, 2 points each = <b>4</b>.",
+      "Any group of cards totalling 15 scores 2. Count every distinct combination \u2014 a single card can sit in more than one."));
+
+    body.appendChild(gRule("Pairs",
+      [gc(8,0),gc(8,2),gc(2,1),gc(12,3),gc(4,0)], [0,1],
+      "Two 8s = a pair = <b>2</b>.",
+      "A pair is 2. Three of a kind is <b>6</b>, four of a kind is <b>12</b>. Pairs go by rank, so a 10 and a King are <i>not</i> a pair even though both are worth 10."));
+
+    body.appendChild(gRule("Runs",
+      [gc(9,0),gc(10,1),gc(11,2),gc(7,3),gc(3,0)], [0,1,2],
+      "9, 10, J \u2014 three in a row = <b>3</b>.",
+      "A run is three or more consecutive cards, 1 point each. The ace is low: A-2-3 is a run, Q-K-A is not. Suits don\u2019t matter for runs."));
+
+    body.appendChild(gRule("Flush",
+      [gc(3,1),gc(4,1),gc(9,1),gc(11,1),gc(7,0)], [0,1,2,3],
+      "All four cards in hand are hearts = <b>4</b>.",
+      "Four cards of one suit <b>in your hand</b> score 4; if the cut is also that suit, 5. The cut matching only some of your hand doesn\u2019t count."));
+
+    body.appendChild(gRule("Nobs",
+      [gc(11,0),gc(4,1),gc(7,2),gc(9,3),gc(13,0)], [0,4],
+      "The J\u2660 matches the cut\u2019s suit (\u2660) = <b>1</b>.",
+      "Hold the Jack of the same suit as the cut card and score 1 \u2014 called \u201cone for his nob.\u201d"));
+
+    var pit=document.createElement("div"); pit.className="gtogether";
+    pit.innerHTML='<h2>Putting it together</h2>'+
+      '<p class="lead">Real hands stack these up. Count in order \u2014 fifteens, then pairs, '+
+      'runs, flush, nobs \u2014 and add as you go.</p>';
+    body.appendChild(pit);
+
+    body.appendChild(gRule("The double run",
+      [gc(4,0),gc(5,1),gc(5,2),gc(6,3),gc(8,0)], [0,1,2,3],
+      "fifteen two, fifteen four, and a pair is six, and a double run of three is <b>12</b>.",
+      "This is the one that trips people up. With <b>two 5s</b> there are two ways through the run 4-5-6 \u2014 one for each 5 \u2014 so the run counts <b>twice</b>: 3 + 3 = 6. The two 5s are also a pair (2), and 4+5+6 makes fifteen both ways (4). Altogether 4 + 2 + 6 = 12. A pair sitting inside a run always doubles the run like this."));
+
+    body.appendChild(gRule("The perfect hand \u2014 29",
+      [gc(5,0),gc(5,1),gc(5,2),gc(11,3),gc(5,3)], [0,1,2,3,4],
+      "Eight fifteens (16), four-of-a-kind 5s (12), and one for his nob = <b>29</b>.",
+      "Three 5s, the Jack of clubs, and the cut is the last 5 \u2014 also a club. Every 5 makes fifteen with the Jack (four of them), and every trio of 5s makes fifteen (four more): eight fifteens, 16. The four 5s are double pair royal, 12. The Jack matches the cut\u2019s suit for nobs, 1. That\u2019s 29 \u2014 the highest hand in cribbage."));
+
+    var close=document.createElement("div"); close.className="gclose-note";
+    close.innerHTML="That\u2019s the whole count. The full game adds pegging during play, the crib, "+
+      "and a point for the dealer when the cut is a Jack \u2014 but counting the show, the part you\u2019ve "+
+      "just learned, is the heart of it.";
+    body.appendChild(close);
+  }
+
   // ---- wiring ------------------------------------------------------------
   elCheck.addEventListener("click", check);
   elGuess.addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
   elDeal.addEventListener("click", newRound);
+
+  // guide modal
+  var overlay=$("overlay");
+  function escClose(e){ if(e.key==="Escape") closeGuide(); }
+  function openGuide(){ overlay.classList.add("open"); $("closeGuide").focus();
+    document.addEventListener("keydown", escClose); }
+  function closeGuide(){ overlay.classList.remove("open");
+    document.removeEventListener("keydown", escClose); $("openGuide").focus(); }
+  $("openGuide").addEventListener("click", openGuide);
+  $("closeGuide").addEventListener("click", closeGuide);
+  overlay.addEventListener("click", function(e){ if(e.target===overlay) closeGuide(); });
+  buildGuide();
 
   showPlaceholders();
 })();

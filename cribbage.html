@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<!--
+  cribbage.html — counting drill (standalone, no Jekyll front matter).
+  Drop at repo root. Jekyll copies front-matter-less files verbatim:
+  no Liquid parsing, no layout, no compress, not in site.pages. Reachable
+  only at /cribbage.html — link it nowhere to keep it hidden.
+
+  Scoring: standard hand show. No his-heels. Four-card hand flush
+  (5 with matching starter). Nobs = hand Jack matching the cut suit.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cribbage Count</title>
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --felt:#0c1a13;
+    --line:#1c2a22;
+    --accent:#35d07f;
+    --accent-dim:#1f7a4d;
+    --ivory:#f5f3ea;
+    --pip-black:#15161a;
+    --pip-red:#c0392b;
+    --text:#e7e9e6;
+    --muted:#7e8a84;
+    --bad:#e0683f;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    padding:clamp(16px,4vw,48px) 16px 64px}
+
+  header{text-align:center;margin-bottom:clamp(20px,4vw,36px)}
+  h1{font-family:var(--mono);font-weight:600;letter-spacing:.18em;
+    font-size:clamp(20px,3.5vw,28px);margin:0;color:var(--text)}
+  h1 .dot{color:var(--accent)}
+  .tag{color:var(--muted);font-size:13px;margin-top:8px;letter-spacing:.02em}
+
+  .timer{font-family:var(--mono);font-size:clamp(34px,8vw,56px);
+    font-variant-numeric:tabular-nums;color:var(--accent);
+    letter-spacing:.04em;line-height:1;margin:4px 0 4px;min-height:1em}
+  .timer.idle{color:var(--line)}
+  .timer-label{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+    color:var(--muted);text-transform:uppercase}
+
+  .table{display:flex;align-items:flex-end;justify-content:center;gap:clamp(20px,5vw,52px);
+    margin:clamp(22px,5vw,40px) 0;min-height:148px;flex-wrap:wrap}
+  .hand{display:flex;gap:clamp(8px,2vw,16px);flex-wrap:wrap;justify-content:center}
+  .cut-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .cut-wrap::before{content:"";position:absolute;left:-26px;top:8px;bottom:8px;
+    width:1px;background:var(--line)}
+  @media(max-width:560px){.cut-wrap::before{display:none}}
+
+  .card{width:clamp(64px,15vw,84px);aspect-ratio:5/7;background:var(--ivory);
+    border-radius:8px;position:relative;color:var(--pip-black);
+    box-shadow:0 6px 18px rgba(0,0,0,.45);user-select:none;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .18s ease, opacity .18s ease}
+  .card.red{color:var(--pip-red)}
+  .card .idx{position:absolute;font-family:var(--sans);font-weight:700;
+    line-height:.9;font-size:clamp(13px,2.6vw,16px);text-align:center}
+  .card .idx.tl{top:6px;left:7px}
+  .card .idx.br{bottom:6px;right:7px;transform:rotate(180deg)}
+  .card .idx small{display:block;font-size:.82em}
+  .card .suit{font-size:clamp(26px,6vw,34px);line-height:1}
+  .card.placeholder{background:transparent;border:1px dashed var(--line);
+    box-shadow:none;color:transparent}
+
+  .cut .card{box-shadow:0 0 0 2px var(--accent),0 8px 22px rgba(53,208,127,.25);
+    transform:rotate(4deg)}
+  .cut-label{font-family:var(--mono);font-size:10px;letter-spacing:.24em;
+    color:var(--accent);text-transform:uppercase}
+
+  .controls{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:420px}
+  .answer{display:flex;gap:10px;width:100%}
+  .answer input{flex:1;background:var(--felt);border:1px solid var(--line);
+    color:var(--text);font-family:var(--mono);font-size:20px;text-align:center;
+    border-radius:8px;padding:12px;outline:none;min-width:0}
+  .answer input:focus{border-color:var(--accent-dim)}
+  .answer input:disabled{opacity:.4}
+
+  button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;
+    border-radius:8px;border:1px solid var(--accent-dim);cursor:pointer;
+    padding:12px 18px;transition:background .15s,opacity .15s,border-color .15s}
+  .btn-check{background:var(--accent-dim);color:var(--ivory);border-color:var(--accent-dim)}
+  .btn-check:hover:not(:disabled){background:var(--accent);border-color:var(--accent)}
+  .btn-deal{background:transparent;color:var(--accent);width:100%;padding:14px;
+    text-transform:uppercase;letter-spacing:.14em}
+  .btn-deal:hover:not(:disabled){background:var(--felt)}
+  button:disabled{opacity:.32;cursor:default}
+
+  .feedback{min-height:24px;font-family:var(--mono);font-size:14px;text-align:center;
+    letter-spacing:.02em}
+  .feedback.ok{color:var(--accent)}
+  .feedback.no{color:var(--bad)}
+
+  .breakdown{width:100%;max-width:420px;font-family:var(--mono);font-size:13px;
+    color:var(--muted);border-top:1px solid var(--line);margin-top:4px;
+    padding-top:14px;display:none}
+  .breakdown.show{display:block}
+  .breakdown .row{display:flex;justify-content:space-between;padding:3px 0}
+  .breakdown .row span:last-child{color:var(--text)}
+  .breakdown .total{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;
+    color:var(--accent)}
+  .breakdown .total span:last-child{color:var(--accent);font-weight:700}
+  .breakdown .cadence{color:var(--muted);font-style:italic;margin-bottom:10px;
+    font-family:var(--sans);font-size:12.5px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;
+    margin-top:clamp(28px,6vw,44px);width:100%;max-width:480px}
+  .stat{background:var(--bg);padding:14px 8px;text-align:center}
+  .stat .val{font-family:var(--mono);font-size:clamp(18px,4vw,22px);color:var(--text);
+    font-variant-numeric:tabular-nums}
+  .stat .val.accent{color:var(--accent)}
+  .stat .lbl{font-size:10px;letter-spacing:.14em;color:var(--muted);
+    text-transform:uppercase;margin-top:6px}
+
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}.cut .card{transform:none}}
+</style>
+</head>
+<body>
+  <header>
+    <h1>CRIBBAGE<span class="dot">.</span>COUNT</h1>
+    <div class="tag">Count the show. Beat the clock.</div>
+  </header>
+
+  <div class="timer-label">elapsed</div>
+  <div class="timer idle" id="timer">0.00</div>
+
+  <div class="table" id="table">
+    <div class="hand" id="hand"></div>
+    <div class="cut-wrap cut" id="cutWrap" style="display:none">
+      <div id="cut"></div>
+      <div class="cut-label">Cut</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="answer">
+      <input id="guess" type="number" inputmode="numeric" placeholder="count"
+             min="0" max="29" disabled autocomplete="off">
+      <button class="btn-check" id="check" disabled>Check</button>
+    </div>
+    <div class="feedback" id="feedback">Press Start to deal a hand.</div>
+    <div class="breakdown" id="breakdown"></div>
+    <button class="btn-deal" id="deal">Start</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="val" id="sLast">—</div><div class="lbl">Last</div></div>
+    <div class="stat"><div class="val accent" id="sBest">—</div><div class="lbl">Best</div></div>
+    <div class="stat"><div class="val" id="sCorrect">0</div><div class="lbl">Correct</div></div>
+    <div class="stat"><div class="val" id="sGuesses">0</div><div class="lbl">Guesses</div></div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- cards -------------------------------------------------------------
+  // rank: 1=A .. 11=J,12=Q,13=K. value (for fifteens) = min(rank,10).
+  var SUITS = [
+    {sym:"\u2660", red:false}, // spades
+    {sym:"\u2665", red:true },  // hearts
+    {sym:"\u2666", red:true },  // diamonds
+    {sym:"\u2663", red:false}  // clubs
+  ];
+  var LABELS = ["","A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+
+  function deal5(){
+    var deck = [];
+    for(var s=0;s<4;s++) for(var r=1;r<=13;r++) deck.push({rank:r,suit:s});
+    // Fisher-Yates, take 5
+    for(var i=deck.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var t=deck[i];deck[i]=deck[j];deck[j]=t;
+    }
+    return deck.slice(0,5); // [0..3] hand, [4] starter
+  }
+
+  // ---- scoring -----------------------------------------------------------
+  function value(r){ return r>10?10:r; }
+
+  function scoreFifteens(cards){
+    var v = cards.map(function(c){return value(c.rank);});
+    var n = v.length, count = 0;
+    for(var mask=1; mask<(1<<n); mask++){
+      var sum=0;
+      for(var b=0;b<n;b++) if(mask&(1<<b)) sum+=v[b];
+      if(sum===15) count++;
+    }
+    return {count:count, points:count*2};
+  }
+
+  function scorePairs(cards){
+    var counts={}, c;
+    cards.forEach(function(card){ counts[card.rank]=(counts[card.rank]||0)+1; });
+    var pts=0;
+    for(var r in counts){ c=counts[r]; pts += c*(c-1)/2*2; }
+    return pts;
+  }
+
+  // maximal consecutive rank runs of length>=3:
+  // points = length * product(count of each rank in run). Ace low only.
+  function scoreRuns(cards){
+    var counts={};
+    cards.forEach(function(card){ counts[card.rank]=(counts[card.rank]||0)+1; });
+    var ranks = Object.keys(counts).map(Number).sort(function(a,b){return a-b;});
+    var pts=0, runLen=0, runMult=1, i=0;
+    while(i<ranks.length){
+      var j=i;
+      while(j+1<ranks.length && ranks[j+1]===ranks[j]+1) j++;
+      var len=j-i+1;
+      if(len>=3){
+        var mult=1;
+        for(var k=i;k<=j;k++) mult*=counts[ranks[k]];
+        pts += len*mult;
+        runLen = len; runMult = mult; // only one run possible across 5 cards
+      }
+      i=j+1;
+    }
+    return {points:pts, len:runLen, mult:runMult};
+  }
+
+  function scoreFlush(hand, starter){
+    var s=hand[0].suit;
+    var allHand = hand.every(function(c){return c.suit===s;});
+    if(!allHand) return 0;
+    return starter.suit===s ? 5 : 4;
+  }
+
+  function scoreNobs(hand, starter){
+    for(var i=0;i<hand.length;i++)
+      if(hand[i].rank===11 && hand[i].suit===starter.suit) return 1;
+    return 0;
+  }
+
+  function scoreHand(cards){
+    var hand = cards.slice(0,4), starter = cards[4], all = cards;
+    var fif = scoreFifteens(all);
+    var pairs = scorePairs(all);
+    var runs = scoreRuns(all);
+    var flush = scoreFlush(hand, starter);
+    var nobs = scoreNobs(hand, starter);
+    var total = fif.points + pairs + runs.points + flush + nobs;
+    return {
+      total: total,
+      raw: {
+        total: total,
+        fifteens: fif.count,
+        pairs: pairs,
+        run: {pts: runs.points, len: runs.len, mult: runs.mult},
+        flush: flush,
+        nobs: nobs
+      },
+      parts: [
+        {label: fif.count>1 ? "Fifteens \u00d7"+fif.count : "Fifteen", pts: fif.points},
+        {label: "Pairs", pts: pairs},
+        {label: runs.len ? "Run of "+runs.len : "Runs", pts: runs.points},
+        {label: flush===5 ? "Flush (5)" : "Flush", pts: flush},
+        {label: "Nobs", pts: nobs}
+      ]
+    };
+  }
+
+  // ---- rendering ---------------------------------------------------------
+  function cardEl(card){
+    var suit = SUITS[card.suit];
+    var el = document.createElement("div");
+    el.className = "card" + (suit.red ? " red":"");
+    var lbl = LABELS[card.rank];
+    function idx(pos){
+      var d=document.createElement("div");
+      d.className="idx "+pos;
+      d.innerHTML = lbl + "<small>"+suit.sym+"</small>";
+      return d;
+    }
+    var s=document.createElement("div"); s.className="suit"; s.textContent=suit.sym;
+    el.appendChild(idx("tl")); el.appendChild(s); el.appendChild(idx("br"));
+    return el;
+  }
+
+  function placeholder(){
+    var el=document.createElement("div");
+    el.className="card placeholder"; el.textContent="?";
+    return el;
+  }
+
+  // authentic spoken count: "fifteen two, fifteen four ... and a pair is six."
+  var NUMW=["zero","one","two","three","four","five","six","seven","eight","nine",
+    "ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen",
+    "eighteen","nineteen","twenty","twenty-one","twenty-two","twenty-three",
+    "twenty-four","twenty-five","twenty-six","twenty-seven","twenty-eight","twenty-nine"];
+  function numWord(n){ return NUMW[n] || String(n); }
+  function pairName(p){
+    return ({2:"a pair",4:"two pair",6:"three of a kind",
+             8:"three of a kind and a pair",12:"four of a kind"})[p] || (p+" in pairs");
+  }
+  function runName(len,mult){
+    var tail=" of "+numWord(len);
+    if(mult===2) return "a double run"+tail;
+    if(mult===3) return "a triple run"+tail;
+    if(mult===4) return "a double-double run"+tail;
+    return "a run"+tail;
+  }
+  function cadence(r){
+    if(r.total===0) return "Nineteen \u2014 the impossible hand. Nothing to count.";
+    var run=0, ph=[];
+    for(var i=0;i<r.fifteens;i++){ run+=2; ph.push("fifteen "+numWord(run)); }
+    if(r.pairs>0){ run+=r.pairs; ph.push("and "+pairName(r.pairs)+" is "+numWord(run)); }
+    if(r.run.pts>0){ run+=r.run.pts; ph.push("and "+runName(r.run.len,r.run.mult)+" is "+numWord(run)); }
+    if(r.flush>0){ run+=r.flush; ph.push("and a flush of "+numWord(r.flush)+" is "+numWord(run)); }
+    if(r.nobs>0){ run+=r.nobs; ph.push("and one for his nob is "+numWord(run)); }
+    return ph.join(", ")+".";
+  }
+
+  // ---- state -------------------------------------------------------------
+  var hand=null, score=null, startTime=0, raf=null, strikes=0, roundActive=false;
+  var bestMs=null;
+  var stats={correct:0, guesses:0};
+
+  var $=function(id){return document.getElementById(id);};
+  var elHand=$("hand"), elCutWrap=$("cutWrap"), elCut=$("cut"),
+      elTimer=$("timer"), elGuess=$("guess"), elCheck=$("check"),
+      elDeal=$("deal"), elFb=$("feedback"), elBd=$("breakdown");
+
+  function fmt(ms){ return (ms/1000).toFixed(2); }
+
+  function tick(){
+    elTimer.textContent = fmt(performance.now()-startTime);
+    raf = requestAnimationFrame(tick);
+  }
+  function stopTimer(){ if(raf){cancelAnimationFrame(raf); raf=null;} }
+
+  function renderCards(){
+    elHand.innerHTML="";
+    hand.slice(0,4).forEach(function(c){ elHand.appendChild(cardEl(c)); });
+    elCut.innerHTML=""; elCut.appendChild(cardEl(hand[4]));
+    elCutWrap.style.display="flex";
+  }
+
+  function showPlaceholders(){
+    elHand.innerHTML="";
+    for(var i=0;i<4;i++) elHand.appendChild(placeholder());
+    elCutWrap.style.display="none";
+  }
+
+  function newRound(){
+    hand = deal5();
+    score = scoreHand(hand);
+    strikes = 0;
+    roundActive = true;
+    renderCards();
+    elBd.className="breakdown";
+    elBd.innerHTML="";
+    elFb.className="feedback";
+    elFb.textContent="Enter your count.";
+    elGuess.disabled=false; elGuess.value=""; elGuess.focus();
+    elCheck.disabled=false;
+    elDeal.disabled=true; elDeal.textContent="Continue";
+    elTimer.className="timer";
+    startTime=performance.now();
+    stopTimer(); tick();
+  }
+
+  function endRound(){
+    roundActive=false;
+    stopTimer();
+    elGuess.disabled=true; elCheck.disabled=true;
+    elDeal.disabled=false;
+  }
+
+  function renderBreakdown(){
+    var rows = score.parts.filter(function(p){return p.pts>0;})
+      .map(function(p){
+        return '<div class="row"><span>'+p.label+'</span><span>'+p.pts+'</span></div>';
+      }).join("");
+    var cadenceText = cadence(score.raw);
+    elBd.innerHTML =
+      '<div class="cadence">'+cadenceText+'</div>' + rows +
+      '<div class="row total"><span>Total</span><span>'+score.total+'</span></div>';
+    elBd.className="breakdown show";
+  }
+
+  function updateStats(){
+    $("sCorrect").textContent = stats.correct;
+    $("sGuesses").textContent = stats.guesses;
+  }
+
+  function check(){
+    if(!roundActive) return;
+    var raw = elGuess.value.trim();
+    if(raw==="") return;               // empty submit is a no-op, not a guess
+    var guess = parseInt(raw,10);
+    if(isNaN(guess)) return;
+
+    stats.guesses++; updateStats();
+
+    if(guess===score.total){
+      var ms = performance.now()-startTime;
+      endRound();
+      elTimer.textContent = fmt(ms);
+      stats.correct++; updateStats();
+      $("sLast").textContent = fmt(ms)+"s";
+      if(bestMs===null || ms<bestMs){ bestMs=ms; $("sBest").textContent = fmt(ms)+"s"; }
+      elFb.className="feedback ok";
+      elFb.textContent="Correct \u2014 "+fmt(ms)+"s.";
+      renderBreakdown();
+    } else {
+      strikes++;
+      if(strikes>=3){
+        endRound();
+        elFb.className="feedback no";
+        elFb.textContent="Out of tries \u2014 the count was "+score.total+".";
+        renderBreakdown();
+      } else {
+        elFb.className="feedback no";
+        elFb.textContent="Not right \u2014 try again ("+strikes+"/3).";
+        elGuess.value=""; elGuess.focus();
+      }
+    }
+  }
+
+  // ---- wiring ------------------------------------------------------------
+  elCheck.addEventListener("click", check);
+  elGuess.addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
+  elDeal.addEventListener("click", newRound);
+
+  showPlaceholders();
+})();
+</script>
+</body>
+</html>

@@ -172,6 +172,35 @@
   .gtogether>h2{margin-bottom:6px}
   .gclose-note{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);
     font-size:13px;color:var(--muted);line-height:1.6;font-style:italic}
+  /* ---- nickname + daily leaderboard ---- */
+  .nickbar{margin:0 0 18px;width:100%;max-width:480px;font-family:var(--mono);font-size:12px}
+  .nick-greeting{color:var(--muted);letter-spacing:.04em}
+  .nick-view,.nick-edit{display:flex;align-items:center;gap:9px;justify-content:center;flex-wrap:wrap}
+  .nick-label{color:var(--muted);letter-spacing:.04em}
+  .nick-name{color:var(--accent);font-weight:600}
+  .nick-name.muted{color:var(--muted);font-weight:400;font-style:italic}
+  .nick-btn{background:none;border:none;color:var(--muted);font-family:var(--mono);
+    font-size:11px;cursor:pointer;border-bottom:1px dotted var(--accent-dim);padding:1px 0;border-radius:0}
+  .nick-btn:hover{color:var(--accent)}
+  .nick-edit input{background:var(--felt);border:1px solid var(--line);color:var(--text);
+    font-family:var(--mono);font-size:13px;border-radius:6px;padding:6px 9px;width:160px;outline:none}
+  .nick-edit input:focus{border-color:var(--accent-dim)}
+  .nick-err{color:var(--bad);text-align:center;margin-top:6px;min-height:14px;font-size:11px}
+
+  .board{margin-top:18px;width:100%;max-width:480px;background:var(--felt);
+    border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .board-title{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:12px;text-align:center}
+  .board-list{list-style:none;margin:0;padding:0}
+  .board-list li{display:flex;align-items:baseline;gap:10px;padding:5px 0;
+    font-family:var(--mono);font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}
+  .board-list li:last-child{border-bottom:none}
+  .board-list .b-rank{color:var(--muted);width:18px}
+  .board-list .b-nick{color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .board-list .b-time{color:var(--accent);font-variant-numeric:tabular-nums}
+  .board-list .board-empty{color:var(--muted);justify-content:center;border-bottom:none;font-style:italic}
+  .board-you{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:12px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
@@ -179,6 +208,19 @@
     <h1>CRIBBAGE<span class="dot">.</span>COUNT</h1>
     <div class="tag">Count the show. Beat the clock.</div>
   </header>
+
+  <div class="nickbar">
+    <div class="nick-view" id="nickView">
+      <span class="nick-greeting"><span id="nickHello">Welcome</span> <span class="nick-name" id="nickName"></span></span>
+      <button class="nick-btn" id="nickEdit">change</button>
+    </div>
+    <div class="nick-edit" id="nickEditRow" style="display:none">
+      <input id="nickInput" type="text" maxlength="16" placeholder="nickname" autocomplete="off" spellcheck="false">
+      <button class="nick-btn" id="nickSave">save</button>
+      <button class="nick-btn" id="nickCancel">cancel</button>
+    </div>
+    <div class="nick-err" id="nickErr"></div>
+  </div>
 
   <div class="timer-label">elapsed</div>
   <div class="timer idle" id="timer">0.00</div>
@@ -209,6 +251,12 @@
     <div class="stat"><div class="val" id="sGuesses">0</div><div class="lbl">Guesses</div></div>
   </div>
 
+  <div class="board" id="board">
+    <div class="board-title">Last 24 hours</div>
+    <ol class="board-list" id="boardList"></ol>
+    <div class="board-you" id="boardYou">Your best (24h): —</div>
+  </div>
+
   <button class="btn-guide" id="openGuide">New to cribbage? <b>How to count a hand</b></button>
 
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="How to count a cribbage hand">
@@ -221,6 +269,11 @@
 <script>
 (function(){
   "use strict";
+
+  // Paste your Apps Script Web app /exec URL between the quotes to enable the
+  // daily leaderboard. Left blank, the game plays normally and the board shows
+  // "not configured".
+  var LEADERBOARD_URL = "https://script.google.com/macros/s/AKfycbxjycKqpioAwrxJJXR7IEhVusbzw3PoXaehrkt1qEz5zRphNxgiY-Z8fUjpucYpZwl8Yw/exec";
 
   // ---- cards -------------------------------------------------------------
   // rank: 1=A .. 11=J,12=Q,13=K. value (for fifteens) = min(rank,10).
@@ -500,6 +553,7 @@
       stats.correct++; updateStats();
       $("sLast").textContent = fmt(ms)+"s";
       if(bestMs===null || ms<bestMs){ bestMs=ms; $("sBest").textContent = fmt(ms)+"s"; }
+      submitIfBest(ms);
       elFb.className="feedback ok";
       elFb.textContent="Correct \u2014 "+fmt(ms)+"s.";
       renderBreakdown();
@@ -623,6 +677,102 @@
     body.appendChild(close);
   }
 
+  // ---- nickname + daily leaderboard --------------------------------------
+  var memStore={};
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return (k in memStore)?memStore[k]:null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){ memStore[k]=v; } }
+
+  var NICK_RE=/^[A-Za-z0-9 _-]{1,16}$/;
+  function cleanNick(s){ return (s==null?"":String(s)).replace(/\s+/g," ").trim(); }
+
+  function fmtSec(ms){ return (ms/1000).toFixed(2)+"s"; }
+
+  var nick = cleanNick(lsGet("crib_nick")||"");
+  var dayBest = null;   // this nickname's best ms in the last 24h (per server), or null
+
+  function renderNick(){
+    if(nick){
+      $("nickHello").textContent="Welcome";
+      $("nickName").textContent=nick; $("nickName").style.display="";
+      $("nickEdit").textContent="change";
+    } else {
+      $("nickHello").textContent="Welcome!";
+      $("nickName").textContent=""; $("nickName").style.display="none";
+      $("nickEdit").textContent="set a nickname";
+    }
+  }
+
+  function renderBoard(data){
+    var list=$("boardList"); list.innerHTML="";
+    var top=(data&&data.top)||[];
+    if(!top.length){
+      var li=document.createElement("li"); li.className="board-empty";
+      li.textContent="No times yet today \u2014 be the first."; list.appendChild(li);
+    } else {
+      top.forEach(function(e,i){
+        var li=document.createElement("li");
+        var r=document.createElement("span"); r.className="b-rank"; r.textContent=(i+1)+".";
+        var n=document.createElement("span"); n.className="b-nick"; n.textContent=e.nick; // textContent escapes
+        var t=document.createElement("span"); t.className="b-time"; t.textContent=fmtSec(e.ms);
+        li.appendChild(r); li.appendChild(n); li.appendChild(t); list.appendChild(li);
+      });
+    }
+    var yb=(data&&typeof data.yourBest==="number")?data.yourBest:dayBest;
+    $("boardYou").textContent="Your best (24h): "+(typeof yb==="number"?fmtSec(yb):"\u2014");
+  }
+
+  function boardMsg(msg){
+    $("boardList").innerHTML="";
+    var li=document.createElement("li"); li.className="board-empty"; li.textContent=msg;
+    $("boardList").appendChild(li); $("boardYou").textContent="";
+  }
+
+  function fetchBoard(){
+    if(!LEADERBOARD_URL){ boardMsg("Leaderboard not configured."); return; }
+    if(typeof fetch!=="function"){ boardMsg("Leaderboard unavailable."); return; }
+    var url=LEADERBOARD_URL+(nick?("?nick="+encodeURIComponent(nick)):"");
+    fetch(url).then(function(r){return r.json();}).then(function(data){
+      dayBest=(typeof data.yourBest==="number")?data.yourBest:null;
+      renderBoard(data);
+    }).catch(function(){ boardMsg("Leaderboard unavailable."); });
+  }
+
+  function submitIfBest(ms){
+    if(!LEADERBOARD_URL || !nick || typeof fetch!=="function") return;
+    if(dayBest!==null && ms>=dayBest) return;       // only post a genuine 24h personal best
+    var msi=Math.round(ms);
+    fetch(LEADERBOARD_URL,{method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},      // simple request: no CORS preflight
+      body:JSON.stringify({nick:nick, ms:msi})})
+      .then(function(r){return r.json();}).then(function(data){
+        if(data && data.ok===false) return;          // server rejected (shouldn't happen post-validation)
+        dayBest=(typeof data.yourBest==="number")?data.yourBest:msi;
+        renderBoard(data);
+      }).catch(function(){ /* silent: the game is unaffected if the post fails */ });
+  }
+
+  function showNickEdit(){ $("nickView").style.display="none"; $("nickEditRow").style.display="flex";
+    var inp=$("nickInput"); inp.value=nick; $("nickErr").textContent=""; inp.focus(); }
+  function hideNickEdit(){ $("nickEditRow").style.display="none"; $("nickView").style.display="flex";
+    $("nickErr").textContent=""; }
+  function saveNick(){
+    var v=cleanNick($("nickInput").value);
+    if(!NICK_RE.test(v)){ $("nickErr").textContent="Letters, numbers, space, - or _ only (max 16)."; return; }
+    nick=v; lsSet("crib_nick", nick);
+    dayBest=null;                       // re-sync best for the new name
+    renderNick(); hideNickEdit(); fetchBoard();
+  }
+
+  function initLeaderboard(){
+    renderNick();
+    $("nickEdit").addEventListener("click", showNickEdit);
+    $("nickSave").addEventListener("click", saveNick);
+    $("nickCancel").addEventListener("click", hideNickEdit);
+    $("nickInput").addEventListener("keydown", function(e){
+      if(e.key==="Enter") saveNick(); else if(e.key==="Escape") hideNickEdit(); });
+    fetchBoard();
+  }
+
   // ---- wiring ------------------------------------------------------------
   elCheck.addEventListener("click", check);
   elGuess.addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
@@ -639,6 +789,7 @@
   $("closeGuide").addEventListener("click", closeGuide);
   overlay.addEventListener("click", function(e){ if(e.target===overlay) closeGuide(); });
   buildGuide();
+  initLeaderboard();
 
   showPlaceholders();
 })();

@@ -273,7 +273,7 @@
   // Paste your Apps Script Web app /exec URL between the quotes to enable the
   // daily leaderboard. Left blank, the game plays normally and the board shows
   // "not configured".
-  var LEADERBOARD_URL = "https://script.google.com/macros/s/AKfycbxjycKqpioAwrxJJXR7IEhVusbzw3PoXaehrkt1qEz5zRphNxgiY-Z8fUjpucYpZwl8Yw/exec";
+  var LEADERBOARD_URL = "https://script.google.com/macros/s/AKfycbwnGXrQ3srJHK9LrOORXToYZb7CPChfbaCT_YxJCj5ID1pC8SU6fj2zQIt3AFUs2D2xaQ/exec";
 
   // ---- cards -------------------------------------------------------------
   // rank: 1=A .. 11=J,12=Q,13=K. value (for fifteens) = min(rank,10).
@@ -553,7 +553,7 @@
       stats.correct++; updateStats();
       $("sLast").textContent = fmt(ms)+"s";
       if(bestMs===null || ms<bestMs){ bestMs=ms; $("sBest").textContent = fmt(ms)+"s"; }
-      submitIfBest(ms);
+      submitIfTop5(ms);
       elFb.className="feedback ok";
       elFb.textContent="Correct \u2014 "+fmt(ms)+"s.";
       renderBreakdown();
@@ -688,7 +688,8 @@
   function fmtSec(ms){ return (ms/1000).toFixed(2)+"s"; }
 
   var nick = cleanNick(lsGet("crib_nick")||"");
-  var dayBest = null;   // this nickname's best ms in the last 24h (per server), or null
+  var dayBest = null;   // this nickname's own fastest ms in the last 24h (per server), or null
+  var topBoard = [];    // last-known top 5 [{nick,ms}], for the submit gate
 
   function renderNick(){
     if(nick){
@@ -733,20 +734,27 @@
     var url=LEADERBOARD_URL+(nick?("?nick="+encodeURIComponent(nick)):"");
     fetch(url).then(function(r){return r.json();}).then(function(data){
       dayBest=(typeof data.yourBest==="number")?data.yourBest:null;
+      topBoard=(data&&data.top)||[];
       renderBoard(data);
     }).catch(function(){ boardMsg("Leaderboard unavailable."); });
   }
 
-  function submitIfBest(ms){
+  function wouldMakeTop5(ms){
+    if(topBoard.length < 5) return true;            // board not full yet
+    return ms < topBoard[4].ms;                     // faster than current 5th place (tie loses)
+  }
+
+  function submitIfTop5(ms){
     if(!LEADERBOARD_URL || !nick || typeof fetch!=="function") return;
-    if(dayBest!==null && ms>=dayBest) return;       // only post a genuine 24h personal best
+    if(!wouldMakeTop5(ms)) return;                  // only post a run that would land in the top 5
     var msi=Math.round(ms);
     fetch(LEADERBOARD_URL,{method:"POST",
       headers:{"Content-Type":"text/plain;charset=utf-8"},      // simple request: no CORS preflight
       body:JSON.stringify({nick:nick, ms:msi})})
       .then(function(r){return r.json();}).then(function(data){
         if(data && data.ok===false) return;          // server rejected (shouldn't happen post-validation)
-        dayBest=(typeof data.yourBest==="number")?data.yourBest:msi;
+        dayBest=(typeof data.yourBest==="number")?data.yourBest:dayBest;
+        topBoard=(data&&data.top)||topBoard;
         renderBoard(data);
       }).catch(function(){ /* silent: the game is unaffected if the post fails */ });
   }

@@ -78,6 +78,51 @@ a:hover { color: #696969; text-decoration: underline; }
   cursor: not-allowed;
 }
 .topbar nav ul li .nav-disabled .fa { font-size: 13px; width: 14px; text-align: center; opacity: 0.6; }
+
+/* ---------- Submenu (dropdown) ---------- */
+.topbar nav ul li.has-submenu { position: relative; }
+.topbar nav ul li .submenu-toggle {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 300;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+}
+.topbar nav ul li .submenu-toggle:hover { color: var(--text-strong); }
+.topbar nav ul li .submenu-toggle .fa { font-size: 13px; width: 14px; text-align: center; opacity: 0.85; }
+.topbar nav ul li .submenu-toggle .submenu-caret { font-size: 11px; opacity: 0.7; width: auto; transition: transform .15s ease; }
+.topbar nav ul li.open .submenu-toggle .submenu-caret { transform: rotate(180deg); }
+.topbar nav ul li .submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 6px 0;
+  min-width: 180px;
+  z-index: 50;
+}
+.topbar nav ul li.open .submenu { display: block; }
+.topbar nav ul li .submenu li { margin: 0; }
+.topbar nav ul li .submenu li a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.topbar nav ul li .submenu li a:hover { color: var(--text-strong); background: rgba(255, 255, 255, 0.03); }
+
 .topbar .social { display: flex; gap: 14px; }
 .topbar .social a { color: var(--accent); text-decoration: none; font-size: 14px; }
 .topbar .social a:hover { color: var(--text-strong); text-decoration: none; }
@@ -557,6 +602,28 @@ footer {
   }
   .topbar nav ul li a .fa,
   .topbar nav ul li .nav-disabled .fa { font-size: 14px; margin-right: 8px; }
+
+  /* Submenu on mobile: indented inline, not a floating panel */
+  .topbar nav ul li .submenu-toggle {
+    padding: 12px 0;
+    font-size: 15px;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .topbar nav ul li .submenu-toggle .fa { font-size: 14px; margin-right: 8px; }
+  .topbar nav ul li .submenu-toggle .submenu-caret { margin-left: auto; }
+  .topbar nav ul li .submenu {
+    position: static;
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0 0 0 22px;
+    min-width: 0;
+  }
+  .topbar nav ul li .submenu li a {
+    padding: 10px 0;
+    font-size: 14px;
+  }
 
   /* service carousel: one card visible at a time, instead of three */
   .carousel-track {

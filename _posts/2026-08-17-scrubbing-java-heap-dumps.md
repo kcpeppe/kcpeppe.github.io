@@ -8,15 +8,17 @@ categories: [java,jvm,gc]
 tags: [Java, JVM, heap-dump, tooling, jscrub, jheapo]
 ---
 
-![Duke mopping stray 1s and 0s off the floor with a bucket and brush](images/duke-mopping.png)
-
-## Heap Dump Analysis
+<img src="/images/duke-mopping.png"
+     alt="Duke mopping 1s and 0s off the floor"
+     style="width: 25%; float: left; margin: 0 1.5em 1em 0;" />	
 
 A couple of months ago I was asked about tooling that could analyze large heap dumps. The question prompted me to write jheapo, a tool that not only was built to analyze large heap dumps but also to support a more modern set of queries that are absent from the usual suspects. It also lead me to one of the biggest obstacles to being able to perform an analysis, privacy. A heap dump can contain a ton of private data.
 
 *Every byte[]* could include sensitive data that you can't hand over to a third party. This could include customer names, email addresses, credit-card numbers, session tokens, the odd password that ended up in a `char[]` or even worse, private medical information. A lot of this data sits in `byte[]` or `char[]`. Even more obscure, your class and method names which are also in the heap dump, may reveal how the application is structured creating concerns about potential company secrets. In short, the privacy concerns, once realized, are the biggest reason why I end up performing heap dump analysis on site instead of in my home office. JScrub solves this problem by creating a copy of your heap dump with all of the sensitive data anonymized.
 
-## A Solution
+<br>
+
+## Introducing JScrub
 
 JScrub rewrites a heap dump, replacing the contents of primitive arrays with random
 data of **exactly the same length**. Data that is repeated is replaced with the same random data. Because nothing changes, the scrubbed heap dump is structurally identical to the input: same object graph, same instance counts, same retained sizes, same everything — only the *contents* of the primitives and primitive arrays are replaced. An analyzer (I use [jheapo](https://github.com/jheapo/jheapo)) sees an identical heap without the secrets.

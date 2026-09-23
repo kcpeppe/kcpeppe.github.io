@@ -50,7 +50,7 @@ urls:
     - text: Java Specialists Superpack
       url: https://javaspecialists.teachable.com/p/superpack23?affcode=92815_mbye0sif
 
-url: "/index.html/"
+url: "https://www.kodewerk.com"
 baseurl: ""
 paginate: 20
 per_page: 20

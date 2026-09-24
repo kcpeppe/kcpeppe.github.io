@@ -8,7 +8,7 @@ categories: [general,java]
 
 ### Update : I've forked GCToolkit to GCSee
 <br/>
-TLDR; this post is about a bit of threading/concurrency silliness combined with ignoring the obvious that I think we can all get caught up in at times. The story starts as I push what I believed to be the final commit of a substantial refactoring of [GCToolKit](https://github.com/microsoft/gctoolkit/tree/message). All of my test were passing on my laptop. They were passing on the laptops of the other poor souls that had the mis-fortune of being involved. All I needed to complete was some tidying up and release documentation. I quickly navigated over to the actions/run/jobs view to watch the GitHub build action progress when to my chagrin, the test ends abruptly with a failure.
+TLDR; this post is about a bit of threading/concurrency silliness combined with ignoring the obvious that I think we can all get caught up in at times. The story starts as I push what I believed to be the final commit of a substantial refactoring of [GCToolKit](https://github.com/microsoft/gctoolkit). All of my test were passing on my laptop. They were passing on the laptops of the other poor souls that had the mis-fortune of being involved. All I needed to complete was some tidying up and release documentation. I quickly navigated over to the actions/run/jobs view to watch the GitHub build action progress when to my chagrin, the test ends abruptly with a failure.
 <br/>
 <br/>
 

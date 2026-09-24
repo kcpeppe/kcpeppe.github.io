@@ -21,7 +21,7 @@ A couple of months ago I was asked about tooling that could analyze large heap d
 ## Introducing JScrub
 
 JScrub rewrites a heap dump, replacing the contents of primitive arrays with random
-data of **exactly the same length**. Data that is repeated is replaced with the same random data. Because nothing changes, the scrubbed heap dump is structurally identical to the input: same object graph, same instance counts, same retained sizes, same everything — only the *contents* of the primitives and primitive arrays are replaced. An analyzer (I use [jheapo](https://github.com/jheapo/jheapo)) sees an identical heap without the secrets.
+data of **exactly the same length**. Data that is repeated is replaced with the same random data. Because nothing changes, the scrubbed heap dump is structurally identical to the input: same object graph, same instance counts, same retained sizes, same everything — only the *contents* of the primitives and primitive arrays are replaced. An analyzer (I use [jheapo](https://github.com/jheapo)) sees an identical heap without the secrets.
 
 A few properties I cared about:
 

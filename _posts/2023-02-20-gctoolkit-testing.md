@@ -14,7 +14,7 @@ Up until release 3.0.1, GCToolKit needed to be on the module path. This is becau
 <br/>
 ### End-to-End Integration Testing with Modules
 <br/>
-One of the difficulties that needed to be solved as part of the original modularization work was how to execute the end to end integration tests. These tests needed to be run with GCToolKit on the module path. At time that this was being looked at, there wasn't a ton of guidance. The first thing I did was pull out my copy of Sander Mak and Paul Bakker's excellent book, [Java 9 Modularity](https://https://javamodularity.com/). While I found the book extremely useful for tips useful for development, there isn't so much in there on testing. However there was enough to suggest that the test should reside in their own module. Configuring surefire to run these tests was as follows.
+One of the difficulties that needed to be solved as part of the original modularization work was how to execute the end to end integration tests. These tests needed to be run with GCToolKit on the module path. At time that this was being looked at, there wasn't a ton of guidance. The first thing I did was pull out my copy of Sander Mak and Paul Bakker's excellent book, [Java 9 Modularity](https://javamodularity.com/). While I found the book extremely useful for tips useful for development, there isn't so much in there on testing. However there was enough to suggest that the test should reside in their own module. Configuring surefire to run these tests was as follows.
 
 ```
 <plugin>

@@ -6,6 +6,7 @@ date:   2023-01-16 21:00:00 +0900
 categories: [general,java]
 ---
 
+### Update : I've forked GCToolkit to GCSee
 <br/>
 TLDR; this post is about a bit of threading/concurrency silliness combined with ignoring the obvious that I think we can all get caught up in at times. The story starts as I push what I believed to be the final commit of a substantial refactoring of [GCToolKit](https://github.com/microsoft/gctoolkit/tree/message). All of my test were passing on my laptop. They were passing on the laptops of the other poor souls that had the mis-fortune of being involved. All I needed to complete was some tidying up and release documentation. I quickly navigated over to the actions/run/jobs view to watch the GitHub build action progress when to my chagrin, the test ends abruptly with a failure.
 <br/>
@@ -52,7 +53,7 @@ Of all the good things I can say about GitHub actions, it's not a great environm
 At the core of GCToolKit is [Vert.x](https://vertx.io/). If you're familiar with Vert.x then you know it is a great famework for event driven systems. The thought to hold onto is that Vert.x is async. Even the things would wouldn't imagine as being async are backed by async calls. Knowing this I did load up the code with some notes pointing out possible trouble spots. Remember that point also as it only adds to the amusement.
 
 
-The initial release of GCToolKit had several direct dependencies on Vert.x. One of the goals of the refactoring was to break these dependencies by introducing messaging API into the gctoolkit-api module. The code to orchestrate the use of this new API can be found in [AbstractJavaVirtualMachine::analyze](https://github.com/microsoft/gctoolkit/blob/message/api/src/main/java/com/microsoft/gctoolkit/jvm/AbstractJavaVirtualMachine.java) and [GCToolKit::analyize](https://github.com/microsoft/gctoolkit/blob/message/api/src/main/java/com/microsoft/gctoolkit/GCToolKit.java). Note that the call to <code>analyze()</code> is synchronous. It should not return until the analysis is complete. For this to happen, the process needs to make use of an asynchronous Vert.x without knowing directly about it. Here is the code for AbstractJavaVirtualMachine::analyze.
+The initial release of GCToolKit had several direct dependencies on Vert.x. One of the goals of the refactoring was to break these dependencies by introducing messaging API into the gctoolkit-api module. The code to orchestrate the use of this new API can be found in [AbstractJavaVirtualMachine::analyze](https://github.com/microsoft/gctoolkit/blob/main/api/src/main/java/com/microsoft/gctoolkit/jvm/AbstractJavaVirtualMachine.java) and [GCToolKit::analyize](https://github.com/microsoft/gctoolkit/blob/main/api/src/main/java/com/microsoft/gctoolkit/GCToolKit.java). Note that the call to <code>analyze()</code> is synchronous. It should not return until the analysis is complete. For this to happen, the process needs to make use of an asynchronous Vert.x without knowing directly about it. Here is the code for AbstractJavaVirtualMachine::analyze.
 <br/>
 
 ```
@@ -115,7 +116,7 @@ The first step is to create an Aggregator for all of the instances of Aggregatio
 After the setup has completed, the contents of the dataSource are streamed into a publish method. The main thread then blocks waiting for the phaser to reach the 0 state before being allowed to continue. The main thread finishes up with a little bit of book keeping before retuning control to GCToolKit and finally to the client code.
 
 ### How Does it Fail?
-The GitHub log output shows us that the failure is in [GarbageCollectionEventSourceTest::testGZipTarFileLineCount](https://github.com/microsoft/gctoolkit/blob/message/vertx/src/test/java/com/microsoft/gctoolkit/vertx/io/GarbageCollectionEventSourceTest.java) where the receiver only managed to receive 407299 out of the expected 41055 messages. Let's run through the code to see if we can spot the problem.
+The GitHub log output shows us that the failure is in [GarbageCollectionEventSourceTest::testGZipTarFileLineCount](https://github.com/microsoft/gctoolkit/blob/main/vertx/src/test/java/com/microsoft/gctoolkit/vertx/io/GarbageCollectionEventSourceTest.java) where the receiver only managed to receive 407299 out of the expected 41055 messages. Let's run through the code to see if we can spot the problem.
 
 The test in question streams the datasource through Vert.x to a listener that counts the number of lines it receives. There are several different tests each covering the different types of supported data sources. Strangely, all of the tests pass except for testGZipTarFileLineCount and testZipFileLineCount. As you can imagine, streaming data from a compressed file is a little more CPU intensive than streaming from a flat file. So maybe in this CPU constrained VM lines where not making it to the listener prior to the listener releasing the main thread so that it could inspect the results. But how, the logic to wait for the message queue to clear seemed bullet proof and Vert.x doesn't drop messages, especially in this configuration. Yet, messages were being missed. Lets look deeper into the code.
 
@@ -259,7 +260,7 @@ Fixing registerListener() was a little more involved as a CountDownLatch was add
     }
 ```
 <br/>
-The same code fixes were applied to [JVMEventVerticle](https://github.com/microsoft/gctoolkit/blob/message/vertx/src/main/java/com/microsoft/gctoolkit/vertx/JVMEventVerticle.java) and [VertxJVMEventSourceChannel](https://github.com/microsoft/gctoolkit/blob/message/vertx/src/main/java/com/microsoft/gctoolkit/vertx/VertxJVMEventChannel.java).
+The same code fixes were applied to [JVMEventVerticle](https://github.com/microsoft/gctoolkit/blob/main/vertx/src/main/java/com/microsoft/gctoolkit/vertx/JVMEventVerticle.java) and [VertxJVMEventSourceChannel](https://github.com/microsoft/gctoolkit/blob/main/vertx/src/main/java/com/microsoft/gctoolkit/vertx/VertxJVMEventChannel.java).
 
 <br/>
 Code is committed, pushed and now the release party is a go! Ok, the explanation is easy, debugging required a shift in how I was thinking about the problem. If one is tunneled on a problem making that shift in thinking isn't easy but it's often the only way to get to the root of the problem.

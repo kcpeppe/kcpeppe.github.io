@@ -16,6 +16,14 @@
                 "tags": ["Java","Garbage Collection","Performance"]
         },
 	{
+		"slug": "jthread",
+		"name": "JThread",
+		"image": "jthread.png",
+		"url": "https://www.jheapo.com/jthread/",
+		"date": "Oct 2026",
+		"tags": ["Java","Threads","Performance"]
+	},
+	{
 		"slug": "github",
 		"name": "Regions",
 		"image": "regions.jpg",
